@@ -1,0 +1,9 @@
+# Discord API
+hikari
+hikari[speedups]
+hikari-tanjun
+hikari-sake
+hikari-yuyo
+uvloop>=0.16; os_name != 'nt'
+aiofiles
+aiohttp
