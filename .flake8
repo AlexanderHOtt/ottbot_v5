@@ -15,7 +15,8 @@ ignore =
     W504,      # line break before binary operator (again, I guess).
     S101,      # Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
     S105,      # Possible hardcoded password.
-    EXE002     # Executable file with not shebang
+    EXE002,    # Executable file with not shebang
+    D401,      # Imperative mood
 
 max-complexity = 20
 max-function-length = 130
