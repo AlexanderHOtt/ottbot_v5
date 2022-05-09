@@ -74,11 +74,11 @@ class Config(abc.ABC):
 class DatabaseConfig(Config):
     """Configuration about a PGSQL database."""
 
-    password: str
+    user: str = "postgres"
+    password: str = "postgres"
     database: str = "postgres"
     host: str = "localhost"
     port: int = 5432
-    user: str = "postgres"
 
     @classmethod
     def from_env(cls: type[ConfigT]) -> ConfigT:
@@ -87,11 +87,11 @@ class DatabaseConfig(Config):
     @classmethod
     def from_mapping(cls, mapping: collections.Mapping[str, typing.Any], /) -> "DatabaseConfig":
         return cls(
-            password=_cast_or_else(mapping, "database_password", str, "postgres"),
-            database=_cast_or_else(mapping, "database", str, "postgres"),
-            host=_cast_or_else(mapping, "database_host", str, "localhost"),
-            port=_cast_or_else(mapping, "database_port", int, 5432),
-            user=_cast_or_else(mapping, "database_user", str, "postgres"),
+            user=_cast_or_else(mapping, "DB_USERNAME", str, "postgres"),
+            password=_cast_or_else(mapping, "DB_PASSWORD", str, "postgres"),
+            database=_cast_or_else(mapping, "DB_NAME", str, "postgres"),
+            host=_cast_or_else(mapping, "DB_HOST", str, "localhost"),
+            port=_cast_or_else(mapping, "DB_PORT", int, 5432),
         )
 
 
@@ -107,13 +107,13 @@ class Tokens(Config):
 
     @classmethod
     def from_mapping(cls, mapping: collections.Mapping[str, typing.Any], /) -> "Tokens":
-        if "token" not in mapping.keys():
-            raise KeyError("'token' is not a key in `mapping`.")
-        if not isinstance(mapping["token"], str):
-            raise ValueError("'token' is not a string.")
+        if "DISCORD_BOT_TOKEN" not in mapping.keys():
+            raise KeyError("'DISCORD_BOT_TOKEN' is not a key in `mapping`.")
+        if not isinstance(mapping["DISCORD_BOT_TOKEN"], str):
+            raise ValueError("'DISCORD_BOT_TOKEN' is not a string.")
 
         return cls(
-            bot=str(mapping["token"]),
+            bot=str(mapping["DISCORD_BOT_TOKEN"]),
         )
 
 
