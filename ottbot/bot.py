@@ -1,8 +1,7 @@
 # -*- coding=utf-8 -*-
 """Create and configure differet Discord bot types."""
-import typing as t
-
 import hikari
+import sake
 import tanjun
 import yuyo
 
@@ -30,7 +29,7 @@ def build_bot(config: config_.FullConfig | None = None) -> hikari.GatewayBot:
 def build_client(bot: hikari.GatewayBot, config: config_.FullConfig | None = None) -> tanjun.Client:
     """Builds and configures a `tanjun.Client`."""
     if config is None:
-        config = config.FullConfig.from_env()
+        config = config_.FullConfig.from_env()
 
     client = tanjun.Client.from_gateway_bot(bot, declare_global_commands=config.declare_global_commands)
 
@@ -39,13 +38,15 @@ def build_client(bot: hikari.GatewayBot, config: config_.FullConfig | None = Non
 
 def register_client_deps(
     bot: hikari.GatewayBot, client: tanjun.Client, config: config_.FullConfig | None = None
-) -> None:
+) -> tanjun.Client:
     """Register `tanjun.Client` callabacks and dependencies."""
     if config is None:
         config = config_.FullConfig.from_env()
 
     component_client = yuyo.ComponentClient.from_gateway_bot(bot, event_managed=False)
     reaction_client = yuyo.ReactionClient.from_gateway_bot(bot, event_managed=False)
+
+    redis_cache = sake.redis.RedisCache(app=bot, event_manager=bot.event_manager, address="redis://127.0.0.1")
 
     client.add_prefix(config.prefixes)
 
@@ -55,9 +56,10 @@ def register_client_deps(
         .add_client_callback(tanjun.ClientCallbackNames.STARTING, reaction_client.open)
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, reaction_client.close)
         # Dep injection
+        .set_type_dependency(sake.redis.RedisCache, redis_cache)
     )
 
     if config.owner_only:
-        client.with_checks(tanjun.checks.OwnerCheck())
+        client.with_check(tanjun.checks.OwnerCheck())
 
     return client

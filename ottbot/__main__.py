@@ -1,9 +1,10 @@
+# -*- coding=utf-8 -*-
+"""Main entry point for module cli."""
 import os
 
 import dotenv
 
 from ottbot import bot
-
 
 dotenv.load_dotenv()
 
