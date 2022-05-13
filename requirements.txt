@@ -1,14 +1,14 @@
 # Discord API
+aiohttp
+uvloop>=0.16; os_name != 'nt'
 hikari
 hikari[speedups]
 hikari-tanjun
-hikari-sake
 hikari-yuyo
-uvloop>=0.16; os_name != 'nt'
+
+# Data management
 aiofiles
-aiohttp
-
 python-dotenv
+asyncpg
+hikari-sake
 
-# Types
-types-PyYAML

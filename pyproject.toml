@@ -10,6 +10,9 @@ reportInvalidTypeVarUse=false
 reportMissingModuleSource=false
 pythonPlatform="Linux"
 
+[tool.mypy]
+mypy_path="./typings/"
+
 [tool.isort]
 profile="black"
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']

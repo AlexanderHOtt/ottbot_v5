@@ -23,7 +23,7 @@ def lint_code(session: Session):
 
 @nox.session(reuse_venv=True)
 def typecheck_code(session: Session):
-    session.install("-r", "requirements.txt")
+    session.install("-r", "requirements.txt", "-r", "type-requirements.txt")
     session.install("mypy")
     session.install("pyright")
 

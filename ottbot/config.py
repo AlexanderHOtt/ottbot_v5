@@ -79,6 +79,7 @@ class DatabaseConfig(Config):
     database: str = "postgres"
     host: str = "localhost"
     port: int = 5432
+    schema: str = "./ottbot/data/static/schema.sql"
 
     @classmethod
     def from_env(cls: type[ConfigT]) -> ConfigT:
@@ -92,6 +93,7 @@ class DatabaseConfig(Config):
             database=_cast_or_else(mapping, "DB_NAME", str, "postgres"),
             host=_cast_or_else(mapping, "DB_HOST", str, "localhost"),
             port=_cast_or_else(mapping, "DB_PORT", int, 5432),
+            schema=_cast_or_else(mapping, "DB_SCHEMA", str, "./ottbot/data/static/schema.sql"),
         )
 
 
@@ -142,7 +144,7 @@ class FullConfig(Config):
 
     @classmethod
     def from_env(cls) -> "FullConfig":
-        dotenv.load_dotenv()
+        dotenv.load_dotenv()  # type: ignore
 
         return cls(
             cache=_cast_or_else(os.environ, "cache", hikari.api.CacheComponents, DEFAULT_CACHE),
