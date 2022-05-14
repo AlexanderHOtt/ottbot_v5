@@ -127,17 +127,19 @@ def parse_log_level(level: t.Union[str, int]) -> int:
     raise ValueError(f"Invalid log level: {level}")
 
 
-def get_list_of_files(dir_name: str, ignore_underscores: bool = True) -> list[pathlib.Path]:
+def get_list_of_files(dir_name: str = constants.MODULE_PATH, ignore_underscores: bool = True) -> list[pathlib.Path]:
     """Glob a directory.
 
-    Returns the partial path separated by '.'s of all the .py
-    files in a given directory where the root is given directory.
+    Returns a list of `pathlib.Path` paths for the module files
 
     Args:
         dir_name (str): The directory to search in.
         ignore_underscores (bool): Whether to ignore files that start
             with an underscore.
     """
+    if (p := pathlib.Path(dir_name)).is_file():
+        return [p]
+
     list_of_files = os.listdir(dir_name)
     all_files: list[pathlib.Path] = []
     # Iterate over all the entries
@@ -154,6 +156,16 @@ def get_list_of_files(dir_name: str, ignore_underscores: bool = True) -> list[pa
                 all_files.append(pathlib.Path(full_path))
 
     return all_files
+
+
+def path_to_module(path: pathlib.Path) -> str:
+    """Get the module string of a path.
+
+    ottbot/modules/load/load.py -> load.load.py
+    """
+    if not path.as_posix().startswith(constants.MODULE_PATH):
+        raise ValueError(f"'path' {path} must start with {constants.MODULE_PATH}")
+    return path.as_posix()[len(constants.MODULE_PATH) :].replace("/", ".")
 
 
 def type_check(func: t.Callable[..., T]) -> t.Callable[..., T]:

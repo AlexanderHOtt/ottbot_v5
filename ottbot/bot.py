@@ -7,6 +7,7 @@ import yuyo
 
 from ottbot import config as config_
 from ottbot.db import AsyncPGDatabase
+from ottbot.utils.funcs import get_list_of_files
 
 
 def build_bot(config: config_.FullConfig | None = None) -> hikari.GatewayBot:
@@ -44,13 +45,16 @@ def register_client_deps(
     if config is None:
         config = config_.FullConfig.from_env()
 
+    # Yuyo clients
     component_client = yuyo.ComponentClient.from_gateway_bot(bot, event_managed=False)
     reaction_client = yuyo.ReactionClient.from_gateway_bot(bot, event_managed=False)
 
+    # Databases
     redis_cache = sake.redis.RedisCache(app=bot, event_manager=bot.event_manager, address="redis://127.0.0.1")
     database = AsyncPGDatabase(config.database)
-    client.add_prefix(config.prefixes)
 
+    # Client configs
+    client.add_prefix(config.prefixes)
     (
         client.add_client_callback(tanjun.ClientCallbackNames.STARTING, component_client.open)
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, component_client.close)
@@ -64,7 +68,7 @@ def register_client_deps(
         .set_type_dependency(sake.redis.RedisCache, redis_cache)
         .set_type_dependency(AsyncPGDatabase, database)
     )
-
+    client.load_modules(*get_list_of_files("./ottbot/modules"))
     if config.owner_only:
         client.with_check(tanjun.checks.OwnerCheck())
 

@@ -3,8 +3,9 @@ aiohttp
 uvloop>=0.16; os_name != 'nt'
 hikari
 hikari[speedups]
-hikari-tanjun
+git+https://github.com/FasterSpeeding/Tanjun.git
 hikari-yuyo
+git+https://github.com/thesadru/tanchi.git
 
 # Data management
 aiofiles

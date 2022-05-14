@@ -4,6 +4,9 @@ import typing as t
 
 from hikari.colors import Color
 
+MODULE_PATH = "ottbot/modules/"
+
+
 DELETE_CUSTOM_ID: str = "AUTHOR_DELETE_BUTTON:"
 
 FAILED_COLOUR: t.Final[Color] = Color(0xF04747)
