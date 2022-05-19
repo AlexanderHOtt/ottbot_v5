@@ -43,10 +43,5 @@ async def cmd_reload(
         except Exception as e:
             logger.error(e)
             errored.append(path_to_module(m))
-    #     await ctx.respond(
-    #         f"\
-    # Success: {[m.stem for m in success]}\n\
-    # Already Loaded: {[m.stem for m in already_loaded]}\n\
-    # Error: {[str(e) for e in error]}"
-    #     )
+
     await ctx.respond(f"R: {reloaded}\nS: {skipped}\nE: {errored}")
