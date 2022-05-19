@@ -23,7 +23,6 @@ async def cmd_unload(
     ctx: tanjun.abc.SlashContext, module: str, client: tanjun.Client = tanjun.inject(type=tanjun.Client)
 ) -> None:
     """Unload a command or module."""
-    # client.
     if ctx.guild_id is None:
         return
     modules = get_list_of_files(
@@ -45,4 +44,3 @@ async def cmd_unload(
             errored.append(path_to_module(m))
 
     await ctx.respond(f"X: {unloaded}\nS: {skipped}\nE: {errored}")
-

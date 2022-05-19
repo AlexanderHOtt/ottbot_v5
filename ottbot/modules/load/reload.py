@@ -23,7 +23,6 @@ async def cmd_reload(
     ctx: tanjun.abc.SlashContext, module: str, client: tanjun.Client = tanjun.inject(type=tanjun.Client)
 ) -> None:
     """Reload a command or module."""
-    # client.
     if ctx.guild_id is None:
         return
     modules = get_list_of_files(
