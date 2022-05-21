@@ -20,7 +20,9 @@ logger = logging.getLogger(__name__)
 )
 @tanjun.as_slash_command("reload", "Load a command or module.", default_to_ephemeral=True)
 async def cmd_reload(
-    ctx: tanjun.abc.SlashContext, module: str, client: tanjun.Client = tanjun.inject(type=tanjun.Client)
+    ctx: tanjun.abc.SlashContext,
+    module: str,
+    client: tanjun.Client = tanjun.inject(type=tanjun.Client),
 ) -> None:
     """Reload a command or module."""
     if ctx.guild_id is None:

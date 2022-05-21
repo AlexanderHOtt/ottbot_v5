@@ -423,7 +423,7 @@ async def get_memebr(
     redis: sake.redis.RedisCache,
     rest: hikari.api.RESTClient,
 ) -> hikari.Member:
-    """Get a member from the cache, redis cache, or api in that order."""
+    """Tries to get a member from the cache, redis cache, or api in that order."""
     if (user := cache.get_member(guild_id, user_id)) is not None:
         return user
     elif (user := await redis.get_member(guild_id, user_id)) is not None:
@@ -437,9 +437,38 @@ async def get_guild(
     redis: sake.redis.RedisCache,
     rest: hikari.api.RESTClient,
 ) -> hikari.Guild:
-    """Get a guild from the cache, redis cache, or api in that order."""
+    """Tries to get a guild from the cache, redis cache, or api in that order."""
     if (guild := cache.get_guild(guild_id)) is not None:
         return guild
     elif (guild := await redis.get_guild(guild_id)) is not None:
         return guild
     return await rest.fetch_guild(guild_id)
+
+
+async def get_text_channel(
+    channel_id: hikari.Snowflakeish,
+    cache: hikari.api.Cache,
+    redis: sake.redis.RedisCache,
+    rest: hikari.api.RESTClient,
+) -> hikari.TextableGuildChannel:
+    """Tries to get a text channel from the cache, redis cache, or api in that order."""
+    if (channel := cache.get_guild_channel(channel_id)) is not None:
+        if isinstance(channel, hikari.TextableGuildChannel):
+            return channel
+        else:
+            raise TypeError(
+                f"Channel is of type {type(channel)} when it should be of type `hikari.TextableGuildChannel`"
+            )
+    elif (channel := await redis.get_guild_channel(channel_id)) is not None:
+        if isinstance(channel, hikari.TextableGuildChannel):
+            return channel
+        else:
+            raise TypeError(
+                f"Channel is of type {type(channel)} when it should be of type `hikari.TextableGuildChannel`"
+            )
+
+    channel = await rest.fetch_channel(channel_id)
+    if isinstance(channel, hikari.TextableGuildChannel):
+        return channel
+    else:
+        raise TypeError(f"Channel is of type {type(channel)} when it should be of type `hikari.TextableGuildChannel`")
