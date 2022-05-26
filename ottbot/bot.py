@@ -67,6 +67,7 @@ def register_client_deps(
         .set_type_dependency(yuyo.ReactionClient, reaction_client)
         .set_type_dependency(sake.redis.RedisCache, redis_cache)
         .set_type_dependency(AsyncPGDatabase, database)
+        .set_type_dependency(config_.FullConfig, config)
     )
     client.load_modules(*get_list_of_files("./ottbot/modules"))
     if config.owner_only:
