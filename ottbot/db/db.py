@@ -29,10 +29,11 @@ class AsyncPGDatabase:
         self.host: str = config.host
         self.port: int = config.port
         self.schema: str = "./ottbot/data/static/schema.sql"
+        self.pool: asyncpg.Pool | None = None
 
     async def connect(self) -> None:
         """Opens a connection pool."""
-        self.pool = await asyncpg.create_pool(
+        self.pool = asyncpg.create_pool(
             user=self.user,
             host=self.host,
             port=self.port,
@@ -45,7 +46,8 @@ class AsyncPGDatabase:
 
     async def close(self) -> None:
         """Closes the connection pool."""
-        await self.pool.close()
+        if self.pool is not None:
+            await self.pool.close()
 
     @staticmethod
     def with_connection(
@@ -54,6 +56,8 @@ class AsyncPGDatabase:
         """A decorator used to acquire a connection from the pool."""
 
         async def wrapper(_self: Self, *args: _P.args, **kwargs: _P.kwargs) -> _R:
+            if _self.pool is None:
+                raise ValueError("Not connected to database.")
             async with _self.pool.acquire() as conn:
                 _self.calls += 1
                 return await func(_self, conn, *args, **kwargs)
@@ -61,21 +65,25 @@ class AsyncPGDatabase:
         return wrapper
 
     @with_connection
-    async def fetch(self, conn: PoolConnectionProxy, q: str, *values: t.Any) -> t.Optional[t.Any]:
+    async def fetch(
+        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[asyncpg.Record] = asyncpg.Record
+    ) -> t.Optional[t.Any]:
         """Read 1 field of applicable data.
 
         SELECT username FROM users WHERE id=1
         """
-        query = await conn.prepare(q)
+        query = await conn.prepare(q, record_class=record_cls)
         return await query.fetchval(*values)
 
     @with_connection
-    async def row(self, conn: PoolConnectionProxy, q: str, *values: t.Any) -> asyncpg.Record | None:
+    async def row(
+        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[asyncpg.Record] = asyncpg.Record
+    ) -> asyncpg.Record | None:
         """Read 1 row of applicable data.
 
         SELECT * FROM users WHERE id=1
         """
-        query = await conn.prepare(q)
+        query = await conn.prepare(q, record_class=record_cls)
         return await query.fetchrow(*values)
 
     @with_connection
@@ -84,12 +92,13 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
+        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
     ) -> t.Optional[t.List[t.Iterable[t.Any]]]:
         """Read all rows of applicable data.
 
         SELECT * FROM users
         """
-        query = await conn.prepare(q)
+        query = await conn.prepare(q, record_class=record_cls)
         if data := await query.fetch(*values):
             return [*map(lambda r: tuple(r.values())[0], data)]
 
@@ -101,12 +110,13 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
+        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
     ) -> t.List[t.Any]:
         """Read a single column of applicable data.
 
         SELECT username FROM users
         """
-        query = await conn.prepare(q)
+        query = await conn.prepare(q, record_class=record_cls)
         return [r[0] for r in await query.fetch(*values)]
 
     @with_connection
@@ -115,12 +125,13 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
+        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
     ) -> None:
         """Execute a write operation on the database.
 
         UPDATE users SET id=10 WHERE id=1
         """
-        query = await conn.prepare(q)
+        query = await conn.prepare(q, record_class=record_cls)
         await query.fetch(*values)
 
     @with_connection
@@ -129,9 +140,10 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         values: t.List[t.Iterable[t.Any]],
+        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
     ) -> None:
         """Execute a write operation for each set of values."""
-        query = await conn.prepare(q)
+        query = await conn.prepare(q, record_class=record_cls)
         await query.executemany(values)
 
     @with_connection
