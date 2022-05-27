@@ -5,6 +5,8 @@ import typing as t
 
 import asyncpg
 
+__all__ = ("AutoRole", "Currency", "GuildConfig", "User")
+
 
 class AttrRecord(asyncpg.Record):
     """An `asyncpg.Record` where attributes are accessible through '.' notation.
@@ -42,6 +44,19 @@ class Currency(AttrRecord):
     balance: int
     bank: int
     last_daily: datetime.datetime
+
+
+class GuildConfig(AttrRecord):
+    """GuildConfig model for database."""
+
+    __tablename__ = "guild_config"
+
+    id: int
+    guild_id: int
+    prefix: str
+    welcome_channel_id: int | None
+    welcome_mesage: str | None
+    log_channel_id: int | None
 
 
 class User(AttrRecord):

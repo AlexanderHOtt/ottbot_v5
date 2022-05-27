@@ -120,7 +120,10 @@ class Tokens(Config):
 
 
 DEFAULT_CACHE: typing.Final[hikari.api.CacheComponents] = (
-    hikari.api.CacheComponents.GUILDS | hikari.api.CacheComponents.GUILD_CHANNELS | hikari.api.CacheComponents.ROLES
+    hikari.api.CacheComponents.GUILDS
+    | hikari.api.CacheComponents.GUILD_CHANNELS
+    | hikari.api.CacheComponents.ROLES
+    | hikari.api.CacheComponents.MESSAGES
 )
 """Default cache configuration."""
 DEFAULT_INTENTS: typing.Final[hikari.Intents] = hikari.Intents.GUILDS | hikari.Intents.ALL_MESSAGES

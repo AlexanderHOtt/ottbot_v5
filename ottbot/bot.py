@@ -19,7 +19,7 @@ def build_bot(config: config_.FullConfig | None = None) -> hikari.GatewayBot:
         config.tokens.bot,
         logs=config.log_level,
         intents=config.intents,
-        cache_settings=hikari.impl.CacheSettings(components=config.cache),
+        cache_settings=hikari.impl.CacheSettings(components=config.cache, max_messages=300),
     )
 
     client = build_client(bot, config)

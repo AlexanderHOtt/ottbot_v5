@@ -13,6 +13,7 @@ _P = t.ParamSpec("_P")
 _R = t.TypeVar("_R")
 
 Self = t.TypeVar("Self", bound="AsyncPGDatabase")
+Rec = t.TypeVar("Rec", bound=asyncpg.Record)
 
 
 class AsyncPGDatabase:
@@ -33,7 +34,7 @@ class AsyncPGDatabase:
 
     async def connect(self) -> None:
         """Opens a connection pool."""
-        self.pool = asyncpg.create_pool(
+        self.pool = await asyncpg.create_pool(
             user=self.user,
             host=self.host,
             port=self.port,
@@ -66,8 +67,8 @@ class AsyncPGDatabase:
 
     @with_connection
     async def fetch(
-        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[asyncpg.Record] = asyncpg.Record
-    ) -> t.Optional[t.Any]:
+        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[Rec] = asyncpg.Record
+    ) -> t.Optional[Rec]:
         """Read 1 field of applicable data.
 
         SELECT username FROM users WHERE id=1
@@ -77,8 +78,8 @@ class AsyncPGDatabase:
 
     @with_connection
     async def row(
-        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[asyncpg.Record] = asyncpg.Record
-    ) -> asyncpg.Record | None:
+        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[Rec] = asyncpg.Record
+    ) -> Rec | None:
         """Read 1 row of applicable data.
 
         SELECT * FROM users WHERE id=1
@@ -92,8 +93,8 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
-        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
-    ) -> t.Optional[t.List[t.Iterable[t.Any]]]:
+        record_cls: t.Type[Rec] = asyncpg.Record,
+    ) -> t.Optional[t.List[t.Iterable[Rec]]]:
         """Read all rows of applicable data.
 
         SELECT * FROM users
@@ -110,8 +111,8 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
-        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
-    ) -> t.List[t.Any]:
+        record_cls: t.Type[Rec] = asyncpg.Record,
+    ) -> t.List[Rec]:
         """Read a single column of applicable data.
 
         SELECT username FROM users
@@ -125,7 +126,7 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
-        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
+        record_cls: t.Type[Rec] = asyncpg.Record,
     ) -> None:
         """Execute a write operation on the database.
 
