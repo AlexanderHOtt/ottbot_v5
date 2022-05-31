@@ -43,4 +43,5 @@ async def lsnr_guild_message_edit(
         event.old_message.content.split("\n") if event.old_message and event.old_message.content else [""],
         event.message.content.split("\n") if event.message.content else [""],
     )
+
     await bot.rest.create_message(guild_config.log_channel_id, f"```diff\n{chr(10).join(diff)}```")
