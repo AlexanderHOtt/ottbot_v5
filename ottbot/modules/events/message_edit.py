@@ -11,7 +11,7 @@ import sake
 from ottbot.db import AsyncPGDatabase, GuildConfig
 from ottbot.utils.funcs import build_loaders, full_name, get_member, message_link
 from ottbot.utils.embeds import EmbedFactory
-from ottbot.constants import Colors
+from ottbot.constants import ZWJ, Colors
 
 component, load_component, unload_component = build_loaders()
 logger = logging.getLogger(__name__)
@@ -49,12 +49,13 @@ async def lsnr_guild_message_edit(
         event.old_message.content.split("\n") if event.old_message and event.old_message.content else [""],
         event.message.content.split("\n") if event.message.content else [""],
     )
+    diff_txt = "\n".join(diff).replace("```", f"``{ZWJ}`")
 
     # Construct message
     fields = [
         ("Before", event.old_message.content if event.old_message and event.old_message.content else "", False),
         ("After", event.message.content or "", False),
-        ("Diff", f"```diff\n{chr(10).join(diff)}```", False),
+        ("Diff", f"```diff\n{diff_txt}```", False),
     ]
 
     if event.author_id is not hikari.UNDEFINED:
@@ -76,7 +77,7 @@ async def lsnr_guild_message_edit(
         desc=f"[Jump to message]({message_link(event.guild_id, event.channel_id, event.message_id)})",
         color=Colors.INFO,
         fields=fields,
-        footer=f"ID: {event.message_id}"
+        footer=f"ID: {event.message_id}",
     )
 
     # Send message
