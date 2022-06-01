@@ -40,7 +40,7 @@ class EmbedFactory:
         timestamp: datetime.datetime | None = None,
         thumbnail: ResourceishT = None,
     ) -> hikari.Embed:
-        """Construct an embed.
+        r"""Construct an embed.
 
         ╭─────────────────────────────────────────────────────────────────────╮
         │ ╭──────╮                                             ╭───────────╮  │
@@ -68,11 +68,11 @@ class EmbedFactory:
         │                                                                     │
         │  *Discord* **text** ~~formatting~~ `is`                             │
         │  [Supported](github.com/AlexanderHOtt)                              │
-        │  \\`\\`\\`md                                                              │
+        │  \`\`\`md                                                              │
         │  # Code Blocks                                                      │
         │                                                                     │
         │  Code blocks are supported                                          │
-        │  \\`\\`\\`                                                                │
+        │  \`\`\`                                                                │
         │  > And quotes                                                       │
         │                                                                     │
         │                                                                     │

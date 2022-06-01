@@ -4,7 +4,6 @@ import typing as t
 
 from hikari.colors import Color
 
-
 MODULE_PATH = "ottbot/modules/"
 
 DELETE_CUSTOM_ID: str = "AUTHOR_DELETE_BUTTON:"

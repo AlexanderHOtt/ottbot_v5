@@ -3,13 +3,11 @@
 import hikari
 import tanjun
 
-from ottbot import constants
+from ottbot.constants import Colors
 
 
 def _embed(ctx: tanjun.abc.Context, message: str) -> hikari.Embed:
-    embed = hikari.Embed(
-        title=f"Command Error: /{ctx.triggering_name}", description=message, color=constants.FAILED_COLOUR
-    )
+    embed = hikari.Embed(title=f"Command Error: /{ctx.triggering_name}", description=message, color=Colors.ERROR)
 
     return embed
 
