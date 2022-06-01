@@ -416,7 +416,17 @@ def ordinal(number: int) -> str:
         return f"{number:,}th"
 
 
-async def get_memebr(
+def message_link(guild_id: int, channel_id: int, message_id: int) -> str:
+    """Generate a link to a message."""
+    return f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+
+
+def full_name(user: hikari.User | hikari.Member, nick=True) -> str:
+    """Get the name#discrim of a user."""
+    return f"{user.display_name if isinstance(user, hikari.Member) and nick else user.username}#{user.discriminator}"
+
+
+async def get_member(
     guild_id: hikari.Snowflakeish,
     user_id: hikari.Snowflakeish,
     cache: hikari.api.Cache,

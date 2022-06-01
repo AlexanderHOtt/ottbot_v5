@@ -4,14 +4,143 @@ import datetime
 import typing as t
 
 import hikari
+import tanjun
 
-FieldsT = t.Optional[t.Iterable[tuple[t.Any, t.Any, bool]]]
+from ottbot.constants import Colors
+
+FieldsT = t.Iterable[tuple[t.Any, t.Any, bool]] | None
+"""Embed field type."""
+ResourceishT = hikari.Resourceish | None
+"""Resourceish type."""
+ESCAPE_NAME: t.Final[str] = "None"
+"""Escape name for not including part of an embed."""
 
 
 class EmbedFactory:
     """Construct discord embeds."""
 
     @staticmethod
-    def build(title: t.Any, desc: t.Any, url: str | None = None, color: hikari.Colorish | None = None) -> hikari.Embed:
-        embed = hikari.Embed(title=title, description=desc, url=url, color=color, timestamp=datetime.datetime.now())
+    def build(
+        ctx_or_event: tanjun.abc.Context | hikari.Event,
+        bot: hikari.GatewayBot,
+        /,
+        *,
+        title: t.Any = None,
+        desc: t.Any = None,
+        url: str | None = None,
+        color: hikari.Colorish | None = None,
+        fields: FieldsT | None = None,
+        author: hikari.User | None = None,
+        header: str | None = None,
+        header_url: str | None = None,
+        header_icon: ResourceishT = None,
+        footer: str | None = None,
+        footer_icon: ResourceishT = None,
+        image: ResourceishT | None = None,
+        timestamp: datetime.datetime | None = None,
+        thumbnail: ResourceishT = None,
+    ) -> hikari.Embed:
+        """Construct an embed.
+
+        ╭─────────────────────────────────────────────────────────────────────╮
+        │ ╭──────╮                                             ╭───────────╮  │
+        │ │Header│     Header (linked to url)                  │           │  │
+        │ │ Icon │     ‾‾‾‾‾‾                                  │ Thumbnail │  │
+        │ ╰──────╯                                             │           │  │
+        │                                                      │           │  │
+        │  EMBED TITLE                                         ╰───────────╯  │
+        │  ‾‾‾‾‾‾‾‾‾‾‾                                                        │
+        │  Embed Description (4096 characters).                               │
+        │                                                                     │
+        │                                                                     │
+        │  [F](url.com)   MAX 256        FIELD 3                              │
+        │  ‾‾‾            CHARACTERS                                          │
+        │  Field 1 text.                 These fields                         │
+        │                 These fields   can have as                          │
+        │                 are inline     much text as                         │
+        │                                you want.                            │
+        │                                                                     │
+        │  THESE FIELDS                                                       │
+        │                                                                     │
+        │  Are not.                                                           │
+        │                                                                     │
+        │  INLINE                                                             │
+        │                                                                     │
+        │  *Discord* **text** ~~formatting~~ `is`                             │
+        │  [Supported](github.com/AlexanderHOtt)                              │
+        │  \\`\\`\\`md                                                              │
+        │  # Code Blocks                                                      │
+        │                                                                     │
+        │  Code blocks are supported                                          │
+        │  \\`\\`\\`                                                                │
+        │  > And quotes                                                       │
+        │                                                                     │
+        │                                                                     │
+        │  ╭───────────────────────────────────────────────────────────────╮  │
+        │  │                                                               │  │
+        │  │                             Image                             │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  │                                                               │  │
+        │  ╰───────────────────────────────────────────────────────────────╯  │
+        │  ╭────╮                                                             │
+        │  │    │  <- Footer Icon, Footer text · Today at 16:20               │
+        │  ╰────╯                                                             │
+        ╰─────────────────────────────────────────────────────────────────────╯
+        """
+        timestamp = datetime.datetime.now().astimezone()
+        embed = hikari.Embed(title=title, description=desc, url=url, color=color or Colors.DEFAULT, timestamp=timestamp)
+
+        embed.set_image(image)
+        embed.set_author(name=header, url=header_url, icon=header_icon)
+        embed.set_thumbnail(thumbnail)
+
+        author = author or getattr(ctx_or_event, "author", None)
+        EmbedFactory._set_footer(embed, footer, footer_icon, author, bot)
+
+        if fields is not None:
+            for field in fields:
+                n, v, i = field
+                embed.add_field(n, v, inline=i)
+
         return embed
+
+    @staticmethod
+    def _set_footer(
+        embed: hikari.Embed,
+        footer_text: str | None,
+        footer_icon: ResourceishT,
+        author: hikari.User | None,
+        bot: hikari.GatewayBot,
+    ) -> hikari.Embed:
+        if footer_text is ESCAPE_NAME:
+            text = None
+        elif footer_text is not None:
+            text = footer_text
+        elif author is not None:
+            text = f"Invoked by {author.username}"
+        else:
+            text = ""
+
+        if footer_text is ESCAPE_NAME:
+            icon = None
+        elif footer_icon is not None:
+            icon = footer_icon
+        elif author is not None:
+            icon = author.avatar_url
+        elif (me := bot.get_me()) is not None:
+            icon = me.avatar_url
+        else:
+            icon = ""
+
+        return embed.set_footer(text=text, icon=icon)

@@ -50,7 +50,7 @@ def register_client_deps(
     reaction_client = yuyo.ReactionClient.from_gateway_bot(bot, event_managed=False)
 
     # Databases
-    redis_cache = sake.redis.RedisCache(app=bot, event_manager=bot.event_manager, address="redis://127.0.0.1")
+    redis_cache = sake.RedisCache(address="redis://127.0.0.1", app=bot, event_manager=bot.event_manager)
     database = AsyncPGDatabase(config.database)
 
     # Client configs
@@ -62,6 +62,8 @@ def register_client_deps(
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, reaction_client.close)
         .add_client_callback(tanjun.ClientCallbackNames.STARTING, database.connect)
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, database.close)
+        .add_client_callback(tanjun.ClientCallbackNames.STARTING, redis_cache.open)
+        .add_client_callback(tanjun.ClientCallbackNames.CLOSING, redis_cache.close)
         # Dep injection
         .set_type_dependency(yuyo.ComponentClient, component_client)
         .set_type_dependency(yuyo.ReactionClient, reaction_client)
