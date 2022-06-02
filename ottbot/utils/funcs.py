@@ -426,6 +426,24 @@ def full_name(user: hikari.User | hikari.Member, nick=True) -> str:
     return f"{user.display_name if isinstance(user, hikari.Member) and nick else user.username}#{user.discriminator}"
 
 
+def format_time(dt: datetime.datetime, format: str) -> str:
+    """Format a datetime object into the discord time format.
+
+    format
+    ----
+    | t | HH:MM            | 16:20
+    | T | HH:MM:SS         | 16:20:11
+    | D | D Mo Yr          | 20 April 2022
+    | f | D Mo Yr HH:MM    | 20 April 2022 16:20
+    | F | W, D Mo Yr HH:MM | Wednesday, 20 April 2022 16:20
+    """
+    match format:
+        case "t" | "T" | "D" | "f" | "F":
+            return f"<t:{dt.timestamp():.0f}:{format}>"
+        case _:
+            raise ValueError(f"`format` must be 't', 'T', 'D', 'f', or 'F', not {format}")
+
+
 async def get_member(
     guild_id: hikari.Snowflakeish,
     user_id: hikari.Snowflakeish,

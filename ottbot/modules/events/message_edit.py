@@ -24,7 +24,7 @@ async def lsnr_guild_message_edit(
     redis: sake.RedisCache = tanjun.inject(type=sake.RedisCache),
     db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
 ) -> None:
-    """On member join event listener."""
+    """On message edit event listener."""
     if not event.is_human:
         return
     logger.info(f"Message Edit in {event.guild_id}")
@@ -35,10 +35,8 @@ async def lsnr_guild_message_edit(
             "SELECT * FROM guild_config WHERE guild_id = $1", event.guild_id, record_cls=GuildConfig
         )
     ) is None:
-        logger.error("No guild config")
         return
     if guild_config.log_channel_id is None:
-        logger.error("No log channel")
         return
 
     # Calculate diff

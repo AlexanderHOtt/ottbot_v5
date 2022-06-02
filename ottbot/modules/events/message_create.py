@@ -26,4 +26,4 @@ async def lsnr_guild_message_create(
     if not event.is_human:
         return
 
-    logger.info(f"Message create {event.message.content}")
+    # logger.info(f"Message create {event.message.content}")

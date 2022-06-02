@@ -10,7 +10,7 @@ from ottbot.constants import Colors
 
 FieldsT = t.Iterable[tuple[t.Any, t.Any, bool]] | None
 """Embed field type."""
-ResourceishT = hikari.Resourceish | None
+ResourceishOrNoneT = hikari.Resourceish | None
 """Resourceish type."""
 ESCAPE_NAME: t.Final[str] = "None"
 """Escape name for not including part of an embed."""
@@ -33,12 +33,12 @@ class EmbedFactory:
         author: hikari.User | None = None,
         header: str | None = None,
         header_url: str | None = None,
-        header_icon: ResourceishT = None,
+        header_icon: ResourceishOrNoneT = None,
         footer: str | None = None,
-        footer_icon: ResourceishT = None,
-        image: ResourceishT | None = None,
+        footer_icon: ResourceishOrNoneT = None,
+        image: ResourceishOrNoneT | None = None,
         timestamp: datetime.datetime | None = None,
-        thumbnail: ResourceishT = None,
+        thumbnail: ResourceishOrNoneT = None,
     ) -> hikari.Embed:
         r"""Construct an embed.
 
@@ -119,7 +119,7 @@ class EmbedFactory:
     def _set_footer(
         embed: hikari.Embed,
         footer_text: str | None,
-        footer_icon: ResourceishT,
+        footer_icon: ResourceishOrNoneT,
         author: hikari.User | None,
         bot: hikari.GatewayBot,
     ) -> hikari.Embed:
@@ -130,7 +130,7 @@ class EmbedFactory:
         elif author is not None:
             text = f"Invoked by {author.username}"
         else:
-            text = ""
+            text = None
 
         if footer_text is ESCAPE_NAME:
             icon = None
@@ -139,8 +139,8 @@ class EmbedFactory:
         elif author is not None:
             icon = author.avatar_url
         elif (me := bot.get_me()) is not None:
-            icon = me.avatar_url
+            icon = me.avatar_url or me.default_avatar_url
         else:
-            icon = ""
+            icon = None
 
         return embed.set_footer(text=text, icon=icon)
