@@ -32,6 +32,7 @@ class AutoRole(AttrRecord):
     id: int
     guild_id: int
     role_id: int
+    role_name: str
 
 
 class Currency(AttrRecord):

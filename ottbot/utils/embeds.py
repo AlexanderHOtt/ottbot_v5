@@ -132,7 +132,7 @@ class EmbedFactory:
         else:
             text = None
 
-        if footer_text is ESCAPE_NAME:
+        if footer_icon is ESCAPE_NAME or text is None:
             icon = None
         elif footer_icon is not None:
             icon = footer_icon
