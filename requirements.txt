@@ -13,3 +13,5 @@ python-dotenv
 asyncpg
 hikari-sake
 
+# Voice
+lavasnek_rs
