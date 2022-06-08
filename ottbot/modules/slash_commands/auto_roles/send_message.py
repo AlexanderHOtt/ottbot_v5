@@ -1,6 +1,5 @@
 # -*- coding=utf-8 -*-
 """Send the autorole message."""
-import functools
 import logging
 
 import hikari
@@ -73,12 +72,36 @@ async def cmd_send_autorole(
     # msg = await ctx.rest.create_message(channel_id, "Select a role", components=[row])
     # await ctx.create_initial_response(f"Sent message in <#{channel_id}>, [jump]({msg.make_link(ctx.guild_id)})")
 
+    async def cb(ctx: yuyo.ComponentContext) -> None:
+        if ctx.interaction.member is None or ctx.interaction.values is None:
+            return
+        role_id = int(ctx.interaction.values[0])
+        try:
+            await ctx.interaction.member.add_role(role_id)
+            await ctx.interaction.create_initial_response(
+                hikari.ResponseType.MESSAGE_CREATE, f"Gave you <@&{role_id}>", flags=hikari.MessageFlag.EPHEMERAL
+            )
+
+        except Exception as e:
+            await ctx.interaction.create_initial_response(
+                hikari.ResponseType.MESSAGE_CREATE, "Not enough permissions.", flags=hikari.MessageFlag.EPHEMERAL
+            )
+
+            logger.error(e)
+
     row = ctx.rest.build_action_row()
-    menu = row.add_select_menu(f"AUTOROLE;{ctx.guild_id}")
+    menu_id = f"AUTOROLE;{ctx.guild_id}"
+
+    menu = row.add_select_menu(menu_id)
+    if component_client.get_constant_id(menu_id) is None:
+        component_client.set_constant_id(menu_id, cb)
+
     for autorole in auto_roles:
-        id = f"AUTOROLE;{ctx.guild_id};{autorole.role_id}"
-        menu.add_option(autorole.role_name, id).set_description("asdf").set_emoji("➕").add_to_menu()
-        component_client.set_constant_id(id, _add_role)
+        option_id = f"{autorole.role_id}"
+        menu.add_option(autorole.role_name, option_id).set_emoji("➕").add_to_menu()
+
+        if component_client.get_constant_id(option_id) is None:
+            component_client.set_constant_id(option_id, _add_role)
     menu.set_placeholder("-- Select a role --").add_to_container()
 
     await ctx.rest.create_message(channel_id, "Select a role", component=row)

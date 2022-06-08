@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS guild_config (
     welcome_channel_id bigint
 );
 
-DROP TABLE IF EXISTS currency;
+-- DROP TABLE IF EXISTS currency;
 
 CREATE TABLE IF NOT EXISTS currency (
     id bigserial NOT NULL PRIMARY KEY,
@@ -53,8 +53,11 @@ CREATE TABLE IF NOT EXISTS invites (
 --     AFTER INSERT ON invites
 --     EXECUTE PROCEDURE delete_old_invites();
 
+-- DROP TABLE IF EXISTS auto_roles;
+
 CREATE TABLE IF NOT EXISTS auto_roles (
     id bigserial NOT NULL PRIMARY KEY,
     guild_id bigint NOT NULL,
-    role_id bigint NOT NULL UNIQUE
+    role_id bigint NOT NULL UNIQUE,
+    role_name varchar(32) NOT NULL
 );
