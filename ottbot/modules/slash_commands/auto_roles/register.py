@@ -21,7 +21,7 @@ async def cmd_register_autorole(
 ) -> None:
     """Register an autorole."""
     if auto_roles := await db.rows("SELECT * FROM auto_roles WHERE guild_id = $1", ctx.guild_id, record_cls=AutoRole):
-        if role.id in [r.role_id for r in auto_roles]:
+        if int(role.id) in [r.role_id for r in auto_roles]:
             await ctx.respond("Role is already registered.")
             return
 

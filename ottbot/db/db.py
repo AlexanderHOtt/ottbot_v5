@@ -94,16 +94,13 @@ class AsyncPGDatabase:
         q: str,
         *values: t.Any,
         record_cls: t.Type[Rec] = asyncpg.Record,
-    ) -> t.Optional[t.List[t.Iterable[Rec]]]:
+    ) -> t.Iterable[Rec] | None:
         """Read all rows of applicable data.
 
         SELECT * FROM users
         """
         query = await conn.prepare(q, record_class=record_cls)
-        if data := await query.fetch(*values):
-            return [*map(lambda r: tuple(r.values())[0], data)]
-
-        return None
+        return await query.fetch(*values)
 
     @with_connection
     async def column(
