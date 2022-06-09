@@ -147,7 +147,7 @@ class FullConfig(Config):
 
     @classmethod
     def from_env(cls) -> "FullConfig":
-        dotenv.load_dotenv()  # type: ignore
+        dotenv.load_dotenv()
 
         return cls(
             cache=_cast_or_else(os.environ, "cache", hikari.api.CacheComponents, DEFAULT_CACHE),
@@ -161,7 +161,7 @@ class FullConfig(Config):
             tokens=Tokens.from_env(),
             declare_global_commands=_cast_or_else(
                 os.environ, "declare_global_commands", lambda v: v if isinstance(v, bool) else hikari.Snowflake(v), True
-            ),
+            ),  # TODO: Allow for mult-character prefixes
         )
 
     @classmethod

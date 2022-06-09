@@ -1,5 +1,7 @@
 # -*- coding=utf-8 -*-
 """Create and configure differet Discord bot types."""
+import typing as t
+
 import hikari
 import sake
 import tanjun
@@ -7,6 +9,7 @@ import yuyo
 
 from ottbot import config as config_
 from ottbot.db import AsyncPGDatabase
+from ottbot.db.records import GuildConfig
 from ottbot.utils.funcs import get_list_of_files
 
 
@@ -53,8 +56,24 @@ def register_client_deps(
     redis_cache = sake.RedisCache(address="redis://127.0.0.1", app=bot, event_manager=bot.event_manager)
     database = AsyncPGDatabase(config.database)
 
-    # Client configs
+    # Command Prefix settings
     client.add_prefix(config.prefixes)
+
+    @client.with_prefix_getter
+    async def _get_prefix(
+        ctx: tanjun.abc.MessageContext, db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase)
+    ) -> t.Iterable[str]:
+        if ctx.guild_id is None:
+            return []
+        if (
+            config := await db.row(
+                "SELECT * FROM guild_config WHERE guild_id = $1", ctx.guild_id, record_cls=GuildConfig
+            )
+        ) is not None:
+            return [config.prefix]
+        return []
+
+    # Client config
     (
         client.add_client_callback(tanjun.ClientCallbackNames.STARTING, component_client.open)
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, component_client.close)

@@ -9,9 +9,7 @@ import tanjun
 
 from ottbot.db import AsyncPGDatabase, GuildConfig
 from ottbot.utils.embeds import EmbedFactory, FieldsT
-from ottbot.utils.funcs import (
-    build_loaders,
-)
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 logger = logging.getLogger(__name__)

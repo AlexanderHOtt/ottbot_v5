@@ -4,10 +4,10 @@ import logging
 
 import hikari
 import tanjun
-from ottbot.db.records import AutoRole
 
-from ottbot.utils.funcs import build_loaders
 from ottbot.db import AsyncPGDatabase
+from ottbot.db.records import AutoRole
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 logger = logging.getLogger(__name__)
