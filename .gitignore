@@ -8,3 +8,5 @@ testing/
 .nox
 
 flake8.log
+dump.rdb
+TODO.md
