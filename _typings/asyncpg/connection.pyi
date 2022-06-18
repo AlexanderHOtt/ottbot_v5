@@ -1,7 +1,7 @@
 import typing as t
 
-from .protocol import Record
 from .prepared_stmt import PreparedStatement
+from .protocol import Record
 
 class Connection:
     """Base connection class."""

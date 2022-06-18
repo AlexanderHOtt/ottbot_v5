@@ -66,7 +66,7 @@ async def cmd_send_autorole(
     #         component_client.set_constant_id(custom_id, _add_role)
     #     ids.append((custom_id, role.role_name))
     #
-    # row = ctx.rest.build_action_row()
+    row = ctx.rest.build_action_row()
     # for id, name in ids[:5]:
     #     row.add_button(hikari.ButtonStyle.SECONDARY, id).set_label(name).set_emoji("➕").add_to_container()
     # msg = await ctx.rest.create_message(channel_id, "Select a role", components=[row])

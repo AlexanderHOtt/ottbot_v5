@@ -1,6 +1,7 @@
 # -*- coding=utf-8 -*-
 """Reset the slash commands for the bot."""
 import asyncio
+
 import hikari
 
 rest = hikari.RESTApp()

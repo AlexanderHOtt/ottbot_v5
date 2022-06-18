@@ -1,4 +1,5 @@
 import typing as t
+
 from .prepared_stmt import PreparedStatement
 from .protocol import Record
 
