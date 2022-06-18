@@ -5,7 +5,7 @@ import tanjun
 
 from ottbot.utils.funcs import build_loaders
 
-component, as_loader, as_unloader = build_loaders()
+component, load_component, unload_component = build_loaders()
 
 
 async def _word_autocomplete(ctx: tanjun.abc.AutocompleteContext, partial_word: str) -> None:
@@ -28,4 +28,5 @@ async def _word_autocomplete(ctx: tanjun.abc.AutocompleteContext, partial_word: 
 @tanjun.with_str_slash_option("word", "A cool word", autocomplete=_word_autocomplete)
 @tanjun.as_slash_command("example_autocomplete", "An example slash command with autocomplete.")
 async def cmd_example_autocomplete(ctx: tanjun.abc.SlashContext, word: str) -> None:
+    """Example autocomplete slash command."""
     await ctx.respond(f"{word} is a pretty cool word!")

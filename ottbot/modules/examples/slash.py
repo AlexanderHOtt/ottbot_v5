@@ -1,17 +1,17 @@
 # -*- coding=utf-8 -*-
 """Example slash commands."""
 
-import hikari
 import tanjun
 
 from ottbot.utils.funcs import build_loaders
 
-component, as_loader, as_unloader = build_loaders()
+component, load_component, unload_component = build_loaders()
 
 
 @component.with_slash_command
 @tanjun.as_slash_command("example_slash", "An example slash command")
 async def cmd_example_slash(ctx: tanjun.abc.Context):
+    """Example slash command."""
     await ctx.respond(f"Hello {ctx.author.mention}", user_mentions=False)
 
 
@@ -21,6 +21,7 @@ async def cmd_example_slash(ctx: tanjun.abc.Context):
 @tanjun.with_str_slash_option("word", "A word, default: 'foo'", default="foo")
 @tanjun.as_slash_command("example_slash_arugments", "A slash command with arguments")
 async def cmd_example_slash_arguments(ctx: tanjun.abc.Context, number: int, number2: int, word: str) -> None:
+    """Example slash command with arguments."""
     await ctx.respond(f"Number: {number}\nNumber2: {number2}\nWord: {word}")
 
 
@@ -31,6 +32,7 @@ async def cmd_example_slash_arguments(ctx: tanjun.abc.Context, number: int, numb
 @tanjun.with_int_slash_option("number", "A number")
 @tanjun.as_slash_command("example_slash_msg", "An example slash and message command")
 async def cmd_slash_msg(ctx: tanjun.abc.Context, number: int) -> None:
+    """Example slash and message command."""
     await ctx.respond(f"You chose {number}")
 
 
@@ -38,6 +40,7 @@ async def cmd_slash_msg(ctx: tanjun.abc.Context, number: int) -> None:
 # you can declare an ephemeral response on the decerator
 @tanjun.as_slash_command("example_ephemeral", "An example ephemeral command.", default_to_ephemeral=True)
 async def cmd_example_ephemeral(ctx: tanjun.abc.SlashContext) -> None:
+    """Example slash command with ephemeral response."""
     await ctx.respond("Ephemeral messages can only be seen by the user who called the command.")
     # or if you use lower-level functions that have an `ephemeral` kwarg or set the message flag
     # await ctx.create_initial_response(
