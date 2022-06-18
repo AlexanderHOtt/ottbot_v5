@@ -59,12 +59,19 @@ def build_loaders(
 ) -> tuple[tanjun.Component, t.Callable[[tanjun.Client], None], t.Callable[[tanjun.Client], None]]:
     """Creates function that load and unload a component.
 
-    Args:
-        component (tanjun.Component): The component to load and unload.
+    Other Parameters
+    ----------------
+    checks : list[tanjun.abc.CheckSig]
+        A list of checks to apply to the component.
 
-    Returns:
-        tuple(Callable[[tanjun.Client], None], Callable[[tanjun.Client], None]):
-            A tuple of functions that load and unload the component respectively.
+    Returns
+    -------
+    component : tanjun.Component
+        The component with the optional checks applied.
+    load_component : Callable[[tanjun.Client], None]
+        The function to load the module.
+    unload_component : Callable[[tanjun.Client], None]
+        The function to unload the module.
     """
     component = tanjun.Component()
     if checks:
@@ -96,14 +103,20 @@ def parse_log_level(level: t.Union[str, int]) -> int:
     This function parses a log level string to an integer. The string can
     either be a number or a string that is a valid log level.
 
-    Args:
-        level (str | int): The log level to parse.
+    Parameters
+    ----------
+    level : str | int
+        The log level to parse.
 
-    Returns:
-        int: The parsed log level.
+    Returns
+    -------
+    int
+        The parsed log level.
 
-    Raises:
-        ValueError: If the log level is invalid.
+    Raises
+    ------
+    ValueError
+        If the log level is invalid.
     """
     name_to_level = {
         "CRITICAL": logging.CRITICAL,
@@ -128,14 +141,16 @@ def parse_log_level(level: t.Union[str, int]) -> int:
 
 
 def get_list_of_files(dir_name: str = constants.MODULE_PATH, ignore_underscores: bool = True) -> list[pathlib.Path]:
-    """Glob a directory.
+    """Glob a directory recursively.
 
-    Returns a list of `pathlib.Path` paths for the module files
+    Returns a list of `pathlib.Path` paths for the module files.
 
-    Args:
-        dir_name (str): The directory to search in.
-        ignore_underscores (bool): Whether to ignore files that start
-            with an underscore.
+    Parameters
+    ----------
+    dir_name : str
+        The directory to search in.
+    ignore_underscores : bool
+        Whether to ignore files that start with an underscore, default: True
     """
     if (p := pathlib.Path(dir_name)).is_file():
         return [p]
@@ -225,23 +240,23 @@ async def collect_response(  # pylint: disable=too-many-branches
 ) -> hikari.GuildMessageCreateEvent | None:
     """Helper function to collect a user response.
 
-    Parameters
-    ==========
-    ctx: SlashContext
-        The context to use.
-    validator: list[str] | Callable | None = None
-        A validator to check against. Validators can be:
-            - list - A list of strings to match against.
-            - Callable/Function - A function accepting (ctx, event) and returning bool.
-            - None - Skips validation and returns True always.
-    timeout int = 60
-        The default wait_for timeout to use.
-    timeout_msg: str = Waited for 60 seconds ... Timeout.
-        The message to display if a timeout occurs
+    | Parameters
+    | ----------
+    | ctx : SlashContext
+    |     The context to use.
+    | validator : list[str] | Callable | None, default: None
+    |     A validator to check against. Validators can be:
+    |         list:              A list of strings to match against.
+    |         Callable/Function: A function accepting (ctx, event) and returning bool.
+    |         None:              Skips validation and returns True always.
+    | timeout : int, default: 60
+    |     The default wait_for timeout to use.
+    | timeout_msg : str, default: 'Waited for 60 seconds ... Timeout.'
+    |     The message to display if a timeout occurs.
     """
 
     def is_author(event: hikari.GuildMessageCreateEvent) -> bool:
-        """Simple check to see if the message athor is the event's author."""
+        """Simple check to see if the message author is the event's author."""
         return ctx.author == event.message.author
 
     # is_author: collections_abc.Callable[[hikari.GuildMessageCreateEvent], bool] = (
@@ -429,8 +444,6 @@ def full_name(user: hikari.User | hikari.Member, nick=True) -> str:
 def format_time(dt: datetime.datetime, format: str) -> str:
     """Format a datetime object into the discord time format.
 
-    format
-    ----
     | t | HH:MM            | 16:20
     | T | HH:MM:SS         | 16:20:11
     | D | D Mo Yr          | 20 April 2022

@@ -1,3 +1,4 @@
+# -*- coding=utf-8 -*-
 """Play or queue a song."""
 
 import hikari
@@ -58,6 +59,7 @@ async def cmd_join(
     ctx: tanjun.abc.Context,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Join a voice channel."""
     if channel_id := await _join_voice(ctx, lavalink):
         await ctx.respond(f"Joined <#{channel_id}>")
 
@@ -70,4 +72,5 @@ async def cmd_play(
     name: str,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ):
+    """Play a song."""
     await _play_track(ctx, name, lavalink)

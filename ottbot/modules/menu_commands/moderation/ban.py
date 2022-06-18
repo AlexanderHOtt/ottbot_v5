@@ -12,7 +12,7 @@ component, load_component, unload_component = build_loaders()
 @component.with_menu_command
 @tanjun.as_user_menu("Ban")
 async def user_menu_ban(
-    ctx: tanjun.abc.AutocompleteContext,
+    ctx: tanjun.abc.MenuContext,
     user: hikari.User | hikari.InteractionMember,
 ) -> None:
     """Ban the user."""

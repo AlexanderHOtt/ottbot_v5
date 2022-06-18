@@ -75,24 +75,37 @@ async def cmd_send_autorole(
     async def cb(ctx: yuyo.ComponentContext) -> None:
         if ctx.interaction.member is None or ctx.interaction.values is None:
             return
-        role_id = int(ctx.interaction.values[0])
-        try:
-            await ctx.interaction.member.add_role(role_id)
-            await ctx.interaction.create_initial_response(
-                hikari.ResponseType.MESSAGE_CREATE, f"Gave you <@&{role_id}>", flags=hikari.MessageFlag.EPHEMERAL
-            )
 
-        except Exception as e:
-            await ctx.interaction.create_initial_response(
-                hikari.ResponseType.MESSAGE_CREATE, "Not enough permissions.", flags=hikari.MessageFlag.EPHEMERAL
-            )
+        added: list[int] = []
+        errored: list[int] = []
+        for id_str in ctx.interaction.values:
+            role_id = int(id_str)
+            try:
+                await ctx.interaction.member.add_role(role_id)
+                added.append(role_id)
+                # await ctx.interaction.create_initial_response(
+                #     hikari.ResponseType.MESSAGE_CREATE, f"Gave you <@&{role_id}>", flags=hikari.MessageFlag.EPHEMERAL
+                # )
 
-            logger.error(e)
+            except Exception as e:
+                # await ctx.interaction.create_initial_response(
+                #     hikari.ResponseType.MESSAGE_CREATE, "Not enough permissions.", flags=hikari.MessageFlag.EPHEMERAL
+                # )
+                errored.append(role_id)
+
+                logger.error(e)
+
+        msg = f"Added {', '.join([f'<@&{r}>' for r in added])}"
+        if errored:
+            msg += f"Errored: {', '.join([f'<@&{r}>' for r in added])}"
+        await ctx.interaction.create_initial_response(
+            hikari.ResponseType.MESSAGE_CREATE,
+        )
 
     row = ctx.rest.build_action_row()
     menu_id = f"AUTOROLE;{ctx.guild_id}"
 
-    menu = row.add_select_menu(menu_id)
+    menu = row.add_select_menu(menu_id).set_max_values(len(list(auto_roles)))
     if component_client.get_constant_id(menu_id) is None:
         component_client.set_constant_id(menu_id, cb)
 
@@ -104,4 +117,5 @@ async def cmd_send_autorole(
             component_client.set_constant_id(option_id, _add_role)
     menu.set_placeholder("-- Select a role --").add_to_container()
 
+    await ctx.respond(f"Sent message in {channel_id}")
     await ctx.rest.create_message(channel_id, "Select a role", component=row)

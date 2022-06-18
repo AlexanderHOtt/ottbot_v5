@@ -17,7 +17,7 @@ component, load_component, unload_component = build_loaders()
 async def message_menu_info(
     ctx: tanjun.abc.MenuContext, message: hikari.Message, bot: hikari.GatewayBot = tanjun.inject(type=hikari.GatewayBot)
 ) -> None:
-    """Message Info"""
+    """Message information."""
     N = "\n"  # python doesn't allow \ in f-string expressions
     if message.content is None:
         await ctx.respond("Error: could not retrieve message content.")
