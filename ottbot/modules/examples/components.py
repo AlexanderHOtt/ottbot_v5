@@ -104,3 +104,36 @@ async def cmd_example_cb(
     )
 
     await ctx.respond("Yuyo!", component=row)
+
+
+@component.with_slash_command
+@tanjun.as_slash_command("example_select_menu_cb", "Example select menu callback.")
+async def cmd_example_select_menu_cb(
+    ctx: tanjun.abc.SlashContext, component_client: yuyo.ComponentClient = tanjun.inject(type=yuyo.ComponentClient)
+) -> None:
+    """Example select menu with yuyo callbacks."""
+    if ctx.guild_id is None:
+        return
+
+    custom_id = "example_select_menu_cb;yuyo_callback"
+
+    async def yuyo_menu_cb(ctx: yuyo.ComponentContext) -> None:
+        ...
+
+    if component_client.get_constant_id(custom_id) is None:
+        component_client.set_constant_id(custom_id, yuyo_menu_cb)
+
+    options: list[tuple[str, str, str | None, hikari.Emoji | hikari.Snowflakeish]] = []
+
+    menu = (row := ctx.rest.build_action_row()).add_select_menu(custom_id)
+
+    for key, value, desc, emoji in options:
+        option = menu.add_option(key, value)
+        if desc:
+            option.set_description(desc)
+        if emoji:
+            option.set_emoji(emoji)
+        option.add_to_menu()
+    menu.add_to_container()
+
+    await ctx.respond("Select some options", component=row)

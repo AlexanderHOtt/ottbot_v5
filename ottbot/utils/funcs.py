@@ -59,6 +59,10 @@ def build_loaders(
 ) -> tuple[tanjun.Component, t.Callable[[tanjun.Client], None], t.Callable[[tanjun.Client], None]]:
     """Creates function that load and unload a component.
 
+    ```python
+    component, load_component, unload_component = build_loaders()
+    ```
+
     Other Parameters
     ----------------
     checks : list[tanjun.abc.CheckSig]
