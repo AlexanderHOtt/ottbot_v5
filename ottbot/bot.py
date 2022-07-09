@@ -3,6 +3,7 @@
 import typing as t
 
 import hikari
+import lavasnek_rs
 import sake
 import tanjun
 import yuyo
@@ -13,7 +14,7 @@ from ottbot.db.records import GuildConfig
 from ottbot.utils.funcs import get_list_of_files
 
 
-def build_bot(config: config_.FullConfig | None = None) -> hikari.GatewayBot:
+def build_bot(config: config_.FullConfig | None = None) -> tuple[hikari.GatewayBot, tanjun.Client]:
     """Builds and configures a `GatewayBot`."""
     if config is None:
         config = config_.FullConfig.from_env()
@@ -28,7 +29,7 @@ def build_bot(config: config_.FullConfig | None = None) -> hikari.GatewayBot:
     client = build_client(bot, config)
     register_client_deps(bot, client, config)
 
-    return bot
+    return bot, client
 
 
 def build_client(bot: hikari.GatewayBot, config: config_.FullConfig | None = None) -> tanjun.Client:

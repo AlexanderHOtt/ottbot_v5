@@ -10,3 +10,7 @@ testing/
 flake8.log
 dump.rdb
 TODO.md
+
+application.yml
+*.jar
+logs/*

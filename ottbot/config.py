@@ -124,6 +124,7 @@ DEFAULT_CACHE: typing.Final[hikari.api.CacheComponents] = (
     | hikari.api.CacheComponents.GUILD_CHANNELS
     | hikari.api.CacheComponents.ROLES
     | hikari.api.CacheComponents.MESSAGES
+    | hikari.api.CacheComponents.VOICE_STATES
 )
 """Default cache configuration."""
 DEFAULT_INTENTS: typing.Final[hikari.Intents] = hikari.Intents.GUILDS | hikari.Intents.ALL_MESSAGES
@@ -137,6 +138,7 @@ class FullConfig(Config):
     database: DatabaseConfig
     tokens: Tokens
     cache: hikari.api.CacheComponents = DEFAULT_CACHE
+    lavalink_password: str | None
     emoji_guild: hikari.Snowflake | None = None
     intents: hikari.Intents = DEFAULT_INTENTS
     log_level: int | str | dict[str, typing.Any] | None = logging.INFO
@@ -151,6 +153,7 @@ class FullConfig(Config):
 
         return cls(
             cache=_cast_or_else(os.environ, "cache", hikari.api.CacheComponents, DEFAULT_CACHE),
+            lavalink_password=_cast_or_else(os.environ, "lavalink_password", str, None),
             database=DatabaseConfig.from_env(),
             emoji_guild=_cast_or_else(os.environ, "emoji_guild", hikari.Snowflake, None),
             intents=_cast_or_else(os.environ, "intents", hikari.Intents, DEFAULT_INTENTS),
