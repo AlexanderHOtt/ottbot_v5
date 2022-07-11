@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  lavalink:
+    build: .
+    environment:
+      - PASSWORD=lavalink
+    ports:
+      - 2333:2333
+    restart: unless-stopped

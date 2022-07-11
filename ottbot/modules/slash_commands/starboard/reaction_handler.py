@@ -3,10 +3,11 @@
 
 
 import hikari
+import sake
+import tanjun
+
 from ottbot.db import AsyncPGDatabase, GuildConfig, Starboard
 from ottbot.utils.funcs import build_loaders, get_message
-import tanjun
-import sake
 
 component, load_component, unload_component = build_loaders()
 

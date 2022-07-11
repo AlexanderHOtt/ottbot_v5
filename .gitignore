@@ -12,4 +12,6 @@ flake8.log
 dump.rdb
 TODO.md
 
-lavalink/
+*.jar
+logs/
+
