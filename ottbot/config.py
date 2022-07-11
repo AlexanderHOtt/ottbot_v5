@@ -139,6 +139,7 @@ class FullConfig(Config):
     tokens: Tokens
     cache: hikari.api.CacheComponents = DEFAULT_CACHE
     lavalink_password: str | None
+    redis_host: str
     emoji_guild: hikari.Snowflake | None = None
     intents: hikari.Intents = DEFAULT_INTENTS
     log_level: int | str | dict[str, typing.Any] | None = logging.INFO
@@ -154,6 +155,7 @@ class FullConfig(Config):
         return cls(
             cache=_cast_or_else(os.environ, "cache", hikari.api.CacheComponents, DEFAULT_CACHE),
             lavalink_password=_cast_or_else(os.environ, "lavalink_password", str, None),
+            redis_host=_cast_or_else(os.environ, "REDIS_HOST", str, "localhost"),
             database=DatabaseConfig.from_env(),
             emoji_guild=_cast_or_else(os.environ, "emoji_guild", hikari.Snowflake, None),
             intents=_cast_or_else(os.environ, "intents", hikari.Intents, DEFAULT_INTENTS),

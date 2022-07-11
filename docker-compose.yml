@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  bot:
+    build: .
+    command: python3 -m ottbot -OOO
+    env_file: .env
+    volumes: 
+      - .:/app
+    # ports:
+    #   - 443:443
+    environment:
+      - DB_HOST=database
+      - REDIS_HOST=cache
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+
+    networks:
+      - ottbot_network
+
+  database:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=dbtest
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    networks:
+      - ottbot_network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  cache:
+    image: redis:alpine
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes: 
+      - cache:/data
+    networks:
+      - ottbot_network
+
+  lavalink:
+    image: ottbot/lavalink
+    networks: 
+      - ottbot_network
+
+volumes:
+  postgres_data:
+  cache:
+
+networks:
+  ottbot_network:
+    driver: bridge

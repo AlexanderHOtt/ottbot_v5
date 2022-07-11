@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS invites (
     guild_id bigint NOT NULL,
     code varchar(32) NOT NULL,
     uses bigint NOT NULL DEFAULT 0,
-    expires_at timestampz
+    expires_at timestamp with time zone
 );
 
 -- CREATE TRIGGER delete_old_invites_trigger

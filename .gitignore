@@ -6,11 +6,10 @@ __pycache__/
 testing/
 .mypy_cache
 .nox
+.idea
 
 flake8.log
 dump.rdb
 TODO.md
 
-application.yml
-*.jar
-logs/*
+lavalink/

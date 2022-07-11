@@ -4,7 +4,6 @@ import hikari
 import lavasnek_rs
 import tanjun
 
-
 music = tanjun.Component()
 
 
@@ -307,3 +306,13 @@ async def _playing(ctx: tanjun.abc.Context, lavalink: lavasnek_rs.Lavalink) -> N
 @tanjun.as_loader
 def load_component(client: tanjun.abc.Client) -> None:
     client.add_component(music.copy())
+
+
+# suggest a song name based on what the user has typed
+async def _song_autocomplete(
+    ctx: tanjun.abc.AutocompleteContext,
+    partial_word: str,
+    lavalink: lavasnek_rs.Lavalink = tanjun.inject(type=lavasnek_rs.Lavalink),
+) -> None:
+    tracks = (await lavalink.auto_search_tracks(partial_word)).tracks
+    await ctx.set_choices({x.info.title: x.info.title for x in tracks})

@@ -20,7 +20,7 @@ async def cmd_example_slash(ctx: tanjun.abc.Context):
 @tanjun.with_int_slash_option("number2", "A second number", choices={"One": 1, "Two": 2, "Three": 3})
 @tanjun.with_str_slash_option("word", "A word, default: 'foo'", default="foo")
 @tanjun.as_slash_command("example_slash_arugments", "A slash command with arguments")
-async def cmd_example_slash_arguments(ctx: tanjun.abc.Context, number: int, number2: int, word: str) -> None:
+async def cmd_example_slash_arguments(ctx: tanjun.abc.SlashContext, number: int, number2: int, word: str) -> None:
     """Example slash command with arguments."""
     await ctx.respond(f"Number: {number}\nNumber2: {number2}\nWord: {word}")
 
