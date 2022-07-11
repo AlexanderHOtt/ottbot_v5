@@ -7,12 +7,18 @@
 - [ ] fix module structure and add command groups where necessary
 - [ ] use `logging.exception` for exceptions
 
+- [ ] refactor music commands
+- [ ] add more music commands
+- [ ] guild config
+- [ ] starboard
+
+
 ## Reogranise modules and commands
 
 command = slash command, prefix command, user app, message app
 if a function is defined in an init file, it cannot be reloaded by the command client, 
   the whole python instance needs to be restarted unless some `inspect` black magic is used
-  to redefine function bodies at runtime / import prevously unimported modules
+  to redefine function bodies at runtime / import previously unimported modules
 
 a bot can have at most 100 slash commands declared, so the max number of files in the modules folder would be around 100 (not including __init__ files)
 
@@ -30,7 +36,7 @@ a bot can have at most 100 slash commands declared, so the max number of files i
   - follows the 'small file' principle
 - 1 cons
   - Module folder would get really bloated 
-  - some functions and components need to be imported from the __init__.py file, meaning they arent re-registered with a /update
+  - some functions and components need to be imported from the __init__.py file, meaning they aren't re-registered with a /update
   - ~~local imports are painful~~. 
   - repeated code
 - 2 pros

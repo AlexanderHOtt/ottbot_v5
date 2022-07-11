@@ -5,7 +5,7 @@ import typing as t
 
 import asyncpg
 
-__all__ = ("AutoRole", "Currency", "GuildConfig", "User")
+__all__ = ("AutoRole", "Currency", "GuildConfig", "User", "Starboard")
 
 
 class AttrRecord(asyncpg.Record):
@@ -58,6 +58,7 @@ class GuildConfig(AttrRecord):
     welcome_channel_id: int | None
     welcome_mesage: str | None
     log_channel_id: int | None
+    starboard_channel: int | None
 
 
 class User(AttrRecord):
@@ -71,3 +72,15 @@ class User(AttrRecord):
     refresh_token: str
     username: str
     discriminator: str
+
+
+class Starboard(AttrRecord):
+    """Starboard entry model."""
+
+    __tablename__ = "starboard"
+
+    id: int
+    original_channel_id: int
+    original_message_id: int
+    sent_channel_id: int
+    sent_message_id: int

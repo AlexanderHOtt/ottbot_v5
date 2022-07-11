@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS guild_config (
     id bigserial NOT NULL PRIMARY KEY,
     guild_id bigint NOT NULL UNIQUE,
     prefix varchar(5) NOT NULL DEFAULT '!',
-    welcome_channel_id bigint
+    welcome_channel_id bigint,
+    starboard_channel bigint
 );
 
 -- DROP TABLE IF EXISTS currency;
@@ -60,4 +61,12 @@ CREATE TABLE IF NOT EXISTS auto_roles (
     guild_id bigint NOT NULL,
     role_id bigint NOT NULL UNIQUE,
     role_name varchar(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS starboard (
+    id bigserial NOT NULL PRIMARY KEY,
+    original_channel_id bigint NOT NULL,
+    original_message_id bigint NOT NULL,
+    sent_channel_id bigint NOT NULL,
+    sent_message_id bigint NOT NULL
 );

@@ -517,3 +517,19 @@ async def get_text_channel(
         return channel
     else:
         raise TypeError(f"Channel is of type {type(channel)} when it should be of type `hikari.TextableGuildChannel`")
+
+
+async def get_message(
+    channel_id: hikari.Snowflakeish,
+    message_id: hikari.Snowflakeish,
+    cache: hikari.api.Cache,
+    redis: sake.redis.RedisCache,
+    rest: hikari.api.RESTClient,
+) -> hikari.Message:
+    """Tries to get a message from the cache, redis cache, or api in that order."""
+    if (message := cache.get_message(message_id)) is not None:
+        return message
+    elif (message := await redis.get_message(message_id)) is not None:
+        return message
+
+    return await rest.fetch_message(channel_id, message_id)
