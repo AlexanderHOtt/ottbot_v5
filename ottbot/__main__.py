@@ -56,7 +56,7 @@ if __name__ == "__main__":
             return
         builder = (
             lavasnek_rs.LavalinkBuilder(event.my_user.id, config.tokens.bot)
-            .set_host("127.0.0.1")
+            .set_host(config.lavalink_host)
             .set_password(config.lavalink_password)
             .set_start_gateway(False)
             # We set start gateway False because hikari can handle
