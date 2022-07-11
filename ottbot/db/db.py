@@ -78,7 +78,11 @@ class AsyncPGDatabase:
 
     @with_connection
     async def row(
-        self, conn: PoolConnectionProxy, q: str, *values: t.Any, record_cls: t.Type[Rec] = asyncpg.Record
+        self,
+        conn: PoolConnectionProxy,
+        q: str,
+        *values: t.Any,
+        record_cls: t.Type[Rec] | None = None,
     ) -> Rec | None:
         """Read 1 row of applicable data.
 
@@ -93,8 +97,8 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
-        record_cls: t.Type[Rec] = asyncpg.Record,
-    ) -> t.Iterable[Rec] | None:
+        record_cls: t.Type[Rec] | None = None,
+    ) -> t.Iterable[Rec]:
         """Read all rows of applicable data.
 
         SELECT * FROM users
@@ -108,7 +112,7 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
-        record_cls: t.Type[Rec] = asyncpg.Record,
+        record_cls: t.Type[Rec] | None = None,
     ) -> t.List[Rec]:
         """Read a single column of applicable data.
 
@@ -123,7 +127,7 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         *values: t.Any,
-        record_cls: t.Type[Rec] = asyncpg.Record,
+        record_cls: t.Type[Rec] | None = None,
     ) -> None:
         """Execute a write operation on the database.
 
@@ -138,7 +142,7 @@ class AsyncPGDatabase:
         conn: PoolConnectionProxy,
         q: str,
         values: t.List[t.Iterable[t.Any]],
-        record_cls: t.Type[asyncpg.Record] = asyncpg.Record,
+        record_cls: t.Type[Rec] | None = None,
     ) -> None:
         """Execute a write operation for each set of values."""
         query = await conn.prepare(q, record_class=record_cls)

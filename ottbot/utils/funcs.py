@@ -233,12 +233,12 @@ async def delete_button_callback(ctx: yuyo.ComponentContext) -> None:
         )
 
 
-async def collect_response(  # pylint: disable=too-many-branches
+async def collect_response(
     ctx: tanjun.abc.SlashContext,
     validator: list[str]
     | collections_abc.Callable[[tanjun.abc.SlashContext, hikari.Event], bool]
     | collections_abc.Callable[[tanjun.abc.SlashContext, hikari.Event], collections_abc.Awaitable[bool]]
-    | None = None,
+    | None = None,  # noqa: D407 (this is not a docstring)
     timeout: int = 60,
     timeout_msg: str = "Waited for 60 seconds... Timeout.",
 ) -> hikari.GuildMessageCreateEvent | None:

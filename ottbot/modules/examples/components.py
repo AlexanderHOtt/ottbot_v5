@@ -1,11 +1,11 @@
 # -*- coding=utf-8 -*-
 """Discord components."""
-import tanjun
 import hikari
+import tanjun
 import yuyo
 
-from ottbot.utils.funcs import build_loaders
 from ottbot.constants import ZWJ
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 

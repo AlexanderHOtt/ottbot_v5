@@ -3,7 +3,6 @@
 import typing as t
 
 import hikari
-import lavasnek_rs
 import sake
 import tanjun
 import yuyo

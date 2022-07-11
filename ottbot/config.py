@@ -185,6 +185,8 @@ class FullConfig(Config):
         return cls(
             cache=_cast_or_else(mapping, "cache", hikari.api.CacheComponents, DEFAULT_CACHE),
             database=DatabaseConfig.from_mapping(mapping["database"]),
+            redis_host=_cast_or_else(mapping, "REDIS_HOST", str, "localhost"),
+            lavalink_password=_cast_or_else(mapping, "lavalink_password", str, None),
             emoji_guild=_cast_or_else(mapping, "emoji_guild", hikari.Snowflake, None),
             intents=_cast_or_else(mapping, "intents", hikari.Intents, DEFAULT_INTENTS),
             log_level=log_level,

@@ -1,3 +1,5 @@
+# -*- coding=utf-8 -*-
+"""Music related slash commands."""
 import typing
 
 import hikari
@@ -13,6 +15,7 @@ async def join_as_slash(
     ctx: tanjun.abc.SlashContext,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Connect the bot to a voice channel."""
     if channel := await _join_voice(ctx, lavalink):
         await ctx.respond(f"Connected to <#{channel}>")
 
@@ -58,6 +61,7 @@ async def play_as_slash(
     song: str,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Play a song, or add it to the queue."""
     await _play_track(ctx, song, lavalink)
 
 
@@ -88,7 +92,7 @@ async def _play_track(ctx: tanjun.abc.Context, song: str, lavalink: lavasnek_rs.
             return
 
     if not (tracks := (await lavalink.auto_search_tracks(song)).tracks):
-        # We didnt find any tracks
+        # We didn't find any tracks
         await ctx.respond(f"No tracks found found song: <{song}>")
         return
 
@@ -110,6 +114,7 @@ async def leave_as_slash(
     ctx: tanjun.abc.SlashContext,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Leaves the voice channel and clears the queue."""
     await _leave_voice(ctx, lavalink)
 
 
@@ -152,6 +157,7 @@ async def stop_as_slash(
     ctx: tanjun.abc.SlashContext,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Stops the currently playing song, skip to play again."""
     await _stop_playback(ctx, lavalink)
 
 
@@ -179,6 +185,7 @@ async def skip_as_slash(
     ctx: tanjun.abc.SlashContext,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Skips the current song."""
     await _skip_track(ctx, lavalink)
 
 
@@ -215,6 +222,7 @@ async def pause_as_slash(
     ctx: tanjun.abc.SlashContext,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Pauses the current song."""
     await _pause_playback(ctx, lavalink)
 
 
@@ -242,6 +250,7 @@ async def resume_as_slash(
     ctx: tanjun.abc.SlashContext,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Resumes the current song."""
     await _resume_playback(ctx, lavalink)
 
 
@@ -269,6 +278,7 @@ async def playing_as_slash(
     ctx: tanjun.abc.Context,
     lavalink: lavasnek_rs.Lavalink = tanjun.injected(type=lavasnek_rs.Lavalink),
 ) -> None:
+    """Displays info on the currently playing song."""
     await _playing(ctx, lavalink)
 
 
@@ -305,6 +315,7 @@ async def _playing(ctx: tanjun.abc.Context, lavalink: lavasnek_rs.Lavalink) -> N
 
 @tanjun.as_loader
 def load_component(client: tanjun.abc.Client) -> None:
+    """Load the component."""
     client.add_component(music.copy())
 
 

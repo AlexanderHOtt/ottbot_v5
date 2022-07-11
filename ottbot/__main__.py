@@ -1,14 +1,14 @@
 # -*- coding=utf-8 -*-
 """Main entry point for module cli."""
 import os
-import lavasnek_rs
-import hikari
-import tanjun
-from ottbot import config as config_
 
 import dotenv
+import hikari
+import lavasnek_rs
+import tanjun
 
 from ottbot import bot
+from ottbot import config as config_
 
 dotenv.load_dotenv()
 

@@ -2,9 +2,9 @@
 """Example database usage."""
 import tanjun
 
-from ottbot.utils.funcs import build_loaders
 from ottbot.db import AsyncPGDatabase
 from ottbot.db.records import GuildConfig
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 
