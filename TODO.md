@@ -12,7 +12,10 @@
 - [ ] add more music commands
 - [ ] guild config
 - [-] starboard
-  - [x] logic
+  - [x] basic logic
+  - [ ] advanced logic
+    - [ ] channel whitelist and blacklist
+    - [ ] minimum number of stars
   - [ ] ui
 - [ ] currency
   - [ ] daily roll
