@@ -10,13 +10,15 @@ CREATE TABLE IF NOT EXISTS users (
     discriminator varchar(4) NOT NULL
 );
 
--- DROP TABLE IF EXISTS guild_config;
+DROP TABLE IF EXISTS guild_config;
 
 CREATE TABLE IF NOT EXISTS guild_config (
     id bigserial NOT NULL PRIMARY KEY,
     guild_id bigint NOT NULL UNIQUE,
     prefix varchar(5) NOT NULL DEFAULT '!',
     welcome_channel_id bigint,
+    welcome_message varchar(64),
+    log_channel_id bigint,
     starboard_channel bigint
 );
 

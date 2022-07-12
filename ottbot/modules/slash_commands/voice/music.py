@@ -9,7 +9,9 @@ import tanjun
 
 from ottbot import config as config_
 
-music = tanjun.Component()
+from ottbot.utils.funcs import build_loaders
+
+music, load_component, unload_component = build_loaders()
 
 logger = logging.getLogger(__name__)
 
@@ -404,9 +406,3 @@ async def _playing(ctx: tanjun.abc.Context, lavalink: lavasnek_rs.Lavalink) -> N
         await ctx.respond(
             f"Title: {node.now_playing.track.info.title}\n" f"Requested by: <@!{node.queue[0].requester}>"
         )
-
-
-@tanjun.as_loader
-def load_component(client: tanjun.abc.Client) -> None:
-    """Load the component."""
-    client.add_component(music.copy())

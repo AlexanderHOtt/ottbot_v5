@@ -1,18 +1,22 @@
 # TODO
 
+## General
 - [ ] Normalize Embed footers for events
 - [ ] custom colors for event types
 - [ ] fix yuyo client response in auto_roles
   - [ ] explore how select menus work
 - [ ] fix module structure and add command groups where necessary
 - [ ] use `logging.exception` for exceptions
-
+## Features
 - [ ] refactor music commands
 - [ ] add more music commands
 - [ ] guild config
 - [-] starboard
   - [x] logic
   - [ ] ui
+- [ ] currency
+  - [ ] daily roll
+  - [ ] randomly appearing bosses
 
 
 ## Reogranise modules and commands
