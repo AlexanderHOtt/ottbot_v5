@@ -10,7 +10,9 @@
 - [ ] refactor music commands
 - [ ] add more music commands
 - [ ] guild config
-- [ ] starboard
+- [-] starboard
+  - [x] logic
+  - [ ] ui
 
 
 ## Reogranise modules and commands

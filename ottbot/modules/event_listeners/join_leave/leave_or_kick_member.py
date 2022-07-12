@@ -43,6 +43,7 @@ async def _build_leave_embed(
             ("Joined At", format_time(member.joined_at, "f"), True),
             ("Left At", format_time(left_at, "f"), True),
             ("Time in Server", strfdelta(member.joined_at - left_at), True),
+            ("Roles", f"{''.join([f'<&{r}>' for r in member.role_ids])}", True),
         ]
     finally:
         embed = EmbedFactory.build(
