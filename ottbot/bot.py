@@ -59,8 +59,7 @@ def register_client_deps(
     # Command Prefix settings
     client.add_prefix(config.prefixes)
 
-    @client.with_prefix_getter
-    async def _(
+    async def prefix_getter(
         ctx: tanjun.abc.MessageContext, db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase)
     ) -> t.Iterable[str]:
         """Get the prefix for a guild."""
@@ -73,6 +72,8 @@ def register_client_deps(
         ) is not None:
             return [config.prefix]
         return []
+
+    client.set_prefix_getter(prefix_getter)
 
     # Client config
     (

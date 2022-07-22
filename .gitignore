@@ -7,6 +7,7 @@ testing/
 .mypy_cache
 .nox
 .idea
+.vscode
 
 flake8.log
 dump.rdb
