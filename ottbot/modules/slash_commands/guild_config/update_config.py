@@ -7,10 +7,11 @@
 
 import hikari
 import tanjun
+
 from ottbot.db import AsyncPGDatabase
-from ottbot.utils.funcs import build_loaders
 from ottbot.modules.slash_commands.guild_config import get_guild_config
 from ottbot.utils.embeds import EmbedFactory, FieldsT
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 
@@ -45,6 +46,7 @@ async def cmd_config_welcomechannel(
     channel: hikari.TextableGuildChannel,
     db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
 ) -> None:
+    """Set the welcome channel of a guild."""
     await db.execute("UPDATE guild_config SET welcome_channel_id = $1", channel.id)
     await ctx.respond(f"Updated `welcome_channel_id` to {channel.id} ({channel.mention})")
 

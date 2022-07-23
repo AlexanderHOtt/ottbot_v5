@@ -445,7 +445,7 @@ def full_name(user: hikari.User | hikari.Member, nick=True) -> str:
     return f"{user.display_name if isinstance(user, hikari.Member) and nick else user.username}#{user.discriminator}"
 
 
-def format_time(dt: datetime.datetime, format: str) -> str:
+def format_time(dt: datetime.datetime, fmt: t.Literal["t", "T", "D", "f", "F"]) -> str:
     """Format a datetime object into the discord time format.
 
     | t | HH:MM            | 16:20
@@ -456,9 +456,9 @@ def format_time(dt: datetime.datetime, format: str) -> str:
     """
     match format:
         case "t" | "T" | "D" | "f" | "F":
-            return f"<t:{dt.timestamp():.0f}:{format}>"
+            return f"<t:{dt.timestamp():.0f}:{fmt}>"
         case _:
-            raise ValueError(f"`format` must be 't', 'T', 'D', 'f', or 'F', not {format}")
+            raise ValueError(f"`format` must be 't', 'T', 'D', 'f', or 'F', not {fmt}")
 
 
 async def get_member(

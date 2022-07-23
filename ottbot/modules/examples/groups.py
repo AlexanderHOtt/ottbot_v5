@@ -1,6 +1,8 @@
 # -*- coding=utf-8 -*-
-"""Command group examples.
+"""Command Group Examples."""
 
+"""
+```
 /example subcommand
 /example subcommand2
 /example subgroup command
@@ -12,6 +14,7 @@ example
     subgroup
         command
         command2
+```
 """
 import tanjun
 
