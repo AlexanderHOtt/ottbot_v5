@@ -10,7 +10,7 @@ from ottbot import bot
 dotenv.load_dotenv()
 
 
-VERSION: t.Final[str] = "5.0.0 alpha 1"
+VERSION: t.Final[str] = "5.0.0 alpha 2"
 # logging is handled by hikari, but hikari isn't initialized until `bot.run()` is called
 print(  # noqa: T001
     rf"""
