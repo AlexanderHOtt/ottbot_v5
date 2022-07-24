@@ -1,16 +1,15 @@
 # -*- coding=utf-8 -*-
 """Main entry point for module cli."""
 import os
-import typing as t
 
 import dotenv
 
 from ottbot import bot
+from ottbot.version import VERSION
 
 dotenv.load_dotenv()
 
 
-VERSION: t.Final[str] = "5.0.0 alpha 2"
 # logging is handled by hikari, but hikari isn't initialized until `bot.run()` is called
 print(  # noqa: T001
     rf"""
