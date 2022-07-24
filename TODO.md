@@ -23,6 +23,7 @@
   - [ ] randomly appearing bosses
 - [ ] tags
   - [ ] basic logic
+- [ ] track more info with command.metadata
 
 ## Reogranise modules and commands
 
