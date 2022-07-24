@@ -13,5 +13,8 @@ component, load_component, unload_component = build_loaders(__name__)
 @tanjun.as_slash_command("ping", "Pong!")
 async def cmd_ping(ctx: tanjun.abc.SlashContext) -> None:
     """Responds with 'Pong'."""
+    if not ctx.command:
+        logger.error("No command")
+        return
     logger.info(f"inside ping {ctx.command}")
-    await ctx.respond(f"Pong! {ctx.command.metadata.get('uuid', None) if ctx.command else ''}")
+    await ctx.respond(f"Pong! `{ctx.command.metadata.get('uuid', None)}`\nCalls: {ctx.command.metadata.get('calls', None)}")

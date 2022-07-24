@@ -67,6 +67,8 @@ async def pre_command(ctx: tanjun.abc.Context) -> None:
     u = None
     if ctx.command:
         ctx.command.set_metadata("uuid", u := uuid())
+        calls = ctx.command.metadata.get("calls", 0)
+        ctx.command.set_metadata("calls", calls + 1)
     if isinstance(ctx.command, tanjun.abc.SlashCommand) and isinstance(ctx, tanjun.abc.SlashContext):
         logger.info(
             f"Running slash command /{ctx.command.parent if ctx.command.parent else ''}\
