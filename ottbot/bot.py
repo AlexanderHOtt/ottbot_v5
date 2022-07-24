@@ -14,6 +14,12 @@ from ottbot.utils.funcs import get_list_of_files
 from ottbot.utils.hooks import on_error, on_parser_error, pre_command
 
 
+# https://stackoverflow.com/questions/7507825/where-is-a-complete-example-of-logging-config-dictconfig
+logging_config = {
+    "version": 1,
+}
+
+
 def build_bot(config: config_.FullConfig | None = None) -> tuple[hikari.GatewayBot, tanjun.Client]:
     """Builds and configures a `GatewayBot`."""
     if config is None:

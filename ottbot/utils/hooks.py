@@ -1,5 +1,6 @@
 # -*- coding=utf-8 -*-
 """Hooks for the bot."""
+import traceback
 from uuid import uuid4 as uuid
 
 import hikari
@@ -9,8 +10,19 @@ from ottbot import logger
 from ottbot.constants import Colors
 
 
-def _embed(ctx: tanjun.abc.Context, message: str) -> hikari.Embed:
+def _embed(ctx: tanjun.abc.Context, exc: BaseException, message: str) -> hikari.Embed:
     embed = hikari.Embed(title=f"Command Error: `/{ctx.triggering_name}`", description=message, color=Colors.ERROR)
+
+    embed.add_field("ERROR ID", f"`{ctx.command.metadata.get('uuid', None) if ctx.command else ''}`",).add_field(
+        "EXTRA INFO",
+        f"""```
+GUILD_ID: {ctx.guild_id}
+CHANNEL_ID: {ctx.channel_id}
+USER_ID: {ctx.author.id}
+COMMAND_NAME: {getattr(ctx.command, "name", "")}
+TIMESTAMP: {ctx.created_at}
+```""",
+    ).add_field("Full Traceback", f"```py\n{''.join(traceback.format_exception(exc))}```")
 
     return embed
 
@@ -18,20 +30,27 @@ def _embed(ctx: tanjun.abc.Context, message: str) -> hikari.Embed:
 # TODO: return a bool instead of None
 async def on_error(ctx: tanjun.abc.Context, exc: Exception) -> None:
     """General error callback."""
+    if ctx.command is None:
+        logger.critical(f"No command on err callback, exc: {exc}")
+        return
+    uuid = ctx.command.metadata.get("uuid", None)
     if isinstance(exc, hikari.BadRequestError):
-        await ctx.respond(_embed(ctx, f"**HIKARI ERRIR** ```{exc.args[0]}```"))
+        logger.error(f"Bad Request({uuid}): {exc}")
+        await ctx.respond(_embed(ctx, exc, f"**HIKARI ERROR** ```{exc.args[0]}```"))
         raise exc
 
     elif isinstance(exc, hikari.ExceptionEvent):
-        logger.error(f"Hikari Error: {exc}")
+        logger.error(f"Hikari Error({uuid}): {exc}")
         await ctx.respond(
-            _embed(ctx, f"**HIKARI ERROR**```{exc.args[0] if len(exc.args) > 0  else 'No error message'}```")
+            _embed(ctx, exc, f"**HIKARI ERROR**```{exc.args[0] if len(exc.args) > 0  else 'No error message'}```")
         )
         raise exc
 
     elif isinstance(exc, Exception):
-        logger.error(f"General Error: {exc}")
-        await ctx.respond(_embed(ctx, f"**ERROR**```{exc.args[0] if len(exc.args) > 0 else 'No error message'}```"))
+        logger.error(f"General Error({uuid}): {exc}")
+        await ctx.respond(
+            _embed(ctx, exc, f"**ERROR**```{exc.args[0] if len(exc.args) > 0 else 'No error message'}```")
+        )
 
         raise exc
 
@@ -40,15 +59,15 @@ async def on_error(ctx: tanjun.abc.Context, exc: Exception) -> None:
 async def on_parser_error(ctx: tanjun.abc.Context, exc: tanjun.ParserError) -> None:
     """Command error callback for tanjun client."""
     if isinstance(exc, (tanjun.NotEnoughArgumentsError, tanjun.TooManyArgumentsError)):
-        await ctx.respond(_embed(ctx, f"**Argument Error**```{exc.message}```"))
+        await ctx.respond(_embed(ctx, exc, f"**Argument Error**```{exc.message}```"))
         raise exc
 
     elif isinstance(exc, tanjun.MissingDependencyError):
-        await ctx.respond(_embed(ctx, f"**Dependency Error**```{exc.message}```"))
+        await ctx.respond(_embed(ctx, exc, f"**Dependency Error**```{exc.message}```"))
         raise exc
 
     elif isinstance(exc, tanjun.ConversionError):
-        await ctx.respond(_embed(ctx, f"**Conversion Error**```{exc.message}```"))
+        await ctx.respond(_embed(ctx, exc, f"**Conversion Error**```{exc.message}```"))
         raise exc
 
     # TODO: Add CooldownError once it exists

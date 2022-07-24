@@ -16,5 +16,9 @@ async def cmd_ping(ctx: tanjun.abc.SlashContext) -> None:
     if not ctx.command:
         logger.error("No command")
         return
-    logger.info(f"inside ping {ctx.command}")
-    await ctx.respond(f"Pong! `{ctx.command.metadata.get('uuid', None)}`\nCalls: {ctx.command.metadata.get('calls', None)}")
+    logger.info(f"inside ping {ctx.command.__dict__}")
+    await ctx.respond(
+        f"Pong! `{ctx.command.metadata.get('uuid', None)}`\nCalls: {ctx.command.metadata.get('calls', None)}"
+    )
+
+    await ctx.rest.add_role_to_member(545984256640286730, ctx.author.id, 719644994998239282)
