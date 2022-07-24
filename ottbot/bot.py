@@ -11,6 +11,7 @@ from ottbot import config as config_
 from ottbot.db import AsyncPGDatabase
 from ottbot.db.records import GuildConfig
 from ottbot.utils.funcs import get_list_of_files
+from ottbot.utils.hooks import on_error, on_parser_error, pre_command
 
 
 def build_bot(config: config_.FullConfig | None = None) -> tuple[hikari.GatewayBot, tanjun.Client]:
@@ -37,6 +38,10 @@ def build_client(bot: hikari.GatewayBot, config: config_.FullConfig | None = Non
         config = config_.FullConfig.from_env()
 
     client = tanjun.Client.from_gateway_bot(bot, declare_global_commands=config.declare_global_commands)
+    client.set_hooks(
+        tanjun.AnyHooks().add_on_error(on_error).add_on_parser_error(on_parser_error).set_pre_execution(pre_command)
+    )
+    # client.set_slash_hooks()
 
     return client
 

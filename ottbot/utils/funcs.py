@@ -55,6 +55,7 @@ def to_dict(obj: t.Any, ignore_underscores: bool = True) -> dict[str, str]:
 
 
 def build_loaders(
+    name: str = "",
     checks: list[tanjun.abc.CheckSig] = [],
 ) -> tuple[tanjun.Component, t.Callable[[tanjun.Client], None], t.Callable[[tanjun.Client], None]]:
     """Creates function that load and unload a component.
@@ -77,7 +78,7 @@ def build_loaders(
     unload_component : Callable[[tanjun.Client], None]
         The function to unload the module.
     """
-    component = tanjun.Component()
+    component = tanjun.Component(name=name)
     if checks:
         for check in checks:
             component.add_check(check)

@@ -10,7 +10,6 @@ import time
 import colorlog
 
 from ottbot import config as config_
-from ottbot.utils.funcs import parse_log_level
 
 
 class DailyRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):

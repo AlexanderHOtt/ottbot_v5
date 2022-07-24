@@ -4,7 +4,7 @@ import os
 
 import dotenv
 
-from ottbot import bot, logger, VERSION
+from ottbot import VERSION, bot, logger
 
 dotenv.load_dotenv()
 
@@ -25,6 +25,7 @@ if __name__ == "__main__":
     if os.name != "nt":
         import uvloop
 
+        logger.debug("Installing uvloop")
         uvloop.install()
 
     b, c = bot.build_bot()
