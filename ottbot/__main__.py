@@ -4,14 +4,13 @@ import os
 
 import dotenv
 
-from ottbot import bot
-from ottbot.version import VERSION
+from ottbot import bot, logger, VERSION
 
 dotenv.load_dotenv()
 
 
 # logging is handled by hikari, but hikari isn't initialized until `bot.run()` is called
-print(  # noqa: T001
+logger.info(  # noqa: T001
     rf"""
   _______             ______                      _______     OttBot v{VERSION}
  (_______)  _     _  (____  \        _           (_______)
@@ -30,4 +29,5 @@ if __name__ == "__main__":
 
     b, c = bot.build_bot()
 
+    logger.info("Starting bot...")
     b.run()

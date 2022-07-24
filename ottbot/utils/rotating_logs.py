@@ -9,6 +9,9 @@ import time
 
 import colorlog
 
+from ottbot import config as config_
+from ottbot.utils.funcs import parse_log_level
+
 
 class DailyRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
     """File handler that rotates the filename daily."""
@@ -72,34 +75,37 @@ class DailyRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         self.rolloverAt += self.interval
 
 
+FMT = "%(asctime)s %(name)s %(message)s"
+DATE_FMT = "%Y-%m-%d %H:%M:%S"
+
+color_formatter = colorlog.ColoredFormatter(
+    fmt="%(log_color)s" + FMT,
+    datefmt=DATE_FMT,
+    reset=True,
+    log_colors={
+        "DEBUG": "cyan",
+        "INFO": "green",
+        "WARNING": "yellow",
+        "ERROR": "red",
+        "CRITICAL": "bold_red",
+    },
+)
+formatter = logging.Formatter(fmt=FMT, datefmt=DATE_FMT)
+
+# stdout logger uses color
+logger = colorlog.getLogger("ottbot")
+handler = logging.StreamHandler()
+handler.setFormatter(color_formatter)
+logger.addHandler(handler)
+
+# file logger doesn't use color
+file_handler = DailyRotatingFileHandler("./logs")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+logger.setLevel(config_.FullConfig.from_env().log_level)
+
 if __name__ == "__main__":
-    fmt = "%(asctime)s %(name)s %(message)s"
-    date_fmt = "%Y-%m-%d %H:%M:%S"
-
-    color_formatter = colorlog.ColoredFormatter(
-        fmt="%(log_color)s" + fmt,
-        datefmt=date_fmt,
-        reset=True,
-        log_colors={
-            "DEBUG": "cyan",
-            "INFO": "green",
-            "WARNING": "yellow",
-            "ERROR": "red",
-            "CRITICAL": "bold_red",
-        },
-    )
-    formatter = logging.Formatter(fmt=fmt, datefmt=date_fmt)
-
-    # stdout logger uses color
-    logger = colorlog.getLogger("fdsa")
-    handler = logging.StreamHandler()
-    handler.setFormatter(color_formatter)
-    logger.addHandler(handler)
-
-    # file logger doesn't use color
-    file_handler = DailyRotatingFileHandler("./logs")
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
 
     logger.setLevel(colorlog.DEBUG)
 
