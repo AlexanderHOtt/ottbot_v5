@@ -25,5 +25,16 @@ class Colors:
     ERROR: t.Final[Color] = Color.from_hex_code("#ff0000")  # #F04747
     """Color used to represent a failed execution/attempt."""
 
-    WHITE: t.Final[Color] = Color.from_hex_code("#FFFFFE")  # 0xFFFFFF is treated as no colour in embeds by Discord.
-    """White color."""
+    # 4 main colors #98c379 #61afef #c678dd #e06c75
+    BLACK = "#282c34"
+    DARK_GREY = "#4b5263"
+    LIGHT_GREY = "#5c6370"
+    WHITE = "#abb2bf"
+    RED = "#e06c75"
+    DARK_RED = "#be5046"
+    DARK_GOLD = "#d19a66"
+    YELLOW = "#e5c07b"
+    GREEN = "#98c379"
+    CYAN = "#56b6c2"
+    BLUE = "#61afef"
+    MAGENTA = "#c678dd"
