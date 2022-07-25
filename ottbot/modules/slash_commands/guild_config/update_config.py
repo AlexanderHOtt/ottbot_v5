@@ -7,10 +7,11 @@
 
 import hikari
 import tanjun
+
 from ottbot.db import AsyncPGDatabase
-from ottbot.utils.funcs import build_loaders
 from ottbot.modules.slash_commands.guild_config import get_guild_config
 from ottbot.utils.embeds import EmbedFactory, FieldsT
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 

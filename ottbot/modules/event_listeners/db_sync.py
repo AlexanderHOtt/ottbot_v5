@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """Sync the database on shard ready and guild create events."""
 
-import hikari
 import logging
-from ottbot.utils.funcs import build_loaders
-from ottbot.db import AsyncPGDatabase
+
+import hikari
 import tanjun
+
+from ottbot.db import AsyncPGDatabase
+from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders()
 

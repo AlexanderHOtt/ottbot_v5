@@ -8,7 +8,6 @@ import lavasnek_rs
 import tanjun
 
 from ottbot import config as config_
-
 from ottbot.utils.funcs import build_loaders
 
 music, load_component, unload_component = build_loaders()
