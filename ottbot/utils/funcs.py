@@ -55,6 +55,7 @@ def to_dict(obj: t.Any, ignore_underscores: bool = True) -> dict[str, str]:
 
 
 def build_loaders(
+    name: str = "",
     checks: list[tanjun.abc.CheckSig] = [],
 ) -> tuple[tanjun.Component, t.Callable[[tanjun.Client], None], t.Callable[[tanjun.Client], None]]:
     """Creates function that load and unload a component.
@@ -77,7 +78,7 @@ def build_loaders(
     unload_component : Callable[[tanjun.Client], None]
         The function to unload the module.
     """
-    component = tanjun.Component()
+    component = tanjun.Component(name=name)
     if checks:
         for check in checks:
             component.add_check(check)
@@ -445,7 +446,7 @@ def full_name(user: hikari.User | hikari.Member, nick=True) -> str:
     return f"{user.display_name if isinstance(user, hikari.Member) and nick else user.username}#{user.discriminator}"
 
 
-def format_time(dt: datetime.datetime, format: str) -> str:
+def format_time(dt: datetime.datetime, fmt: t.Literal["t", "T", "D", "f", "F"]) -> str:
     """Format a datetime object into the discord time format.
 
     | t | HH:MM            | 16:20
@@ -456,9 +457,9 @@ def format_time(dt: datetime.datetime, format: str) -> str:
     """
     match format:
         case "t" | "T" | "D" | "f" | "F":
-            return f"<t:{dt.timestamp():.0f}:{format}>"
+            return f"<t:{dt.timestamp():.0f}:{fmt}>"
         case _:
-            raise ValueError(f"`format` must be 't', 'T', 'D', 'f', or 'F', not {format}")
+            raise ValueError(f"`format` must be 't', 'T', 'D', 'f', or 'F', not {fmt}")
 
 
 async def get_member(

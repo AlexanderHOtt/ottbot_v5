@@ -8,6 +8,7 @@
 - [ ] fix module structure and add command groups where necessary
 - [ ] use `logging.exception` for exceptions
 ## Features
+- [ ] help command
 - [ ] refactor music commands
 - [ ] add more music commands
 - [ ] guild config
@@ -20,7 +21,9 @@
 - [ ] currency
   - [ ] daily roll
   - [ ] randomly appearing bosses
-
+- [ ] tags
+  - [ ] basic logic
+- [ ] track more info with command.metadata
 
 ## Reogranise modules and commands
 

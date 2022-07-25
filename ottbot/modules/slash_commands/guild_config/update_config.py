@@ -78,7 +78,7 @@ async def cmd_config_log_channel(
     "channel", "The channel to send starboard messages in.", types=(hikari.TextableGuildChannel,)
 )
 @tanjun.as_slash_command("starboard-channel", "Update the starboard channel.")
-async def cmd_config_log_channel(
+async def cmd_config_starboard_channel(
     ctx: tanjun.abc.SlashContext,
     channel: hikari.InteractionChannel,
     db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
@@ -87,5 +87,5 @@ async def cmd_config_log_channel(
     if ctx.guild_id is None:
         return
 
-    await db.execute("UPDATE guild_config SET log_channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild_id)
+    await db.execute("UPDATE guild_config SET starboard_channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild_id)
     await ctx.respond(f"Updated `log_channel` to <#{channel.id}>")
