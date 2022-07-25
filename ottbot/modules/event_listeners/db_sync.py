@@ -18,15 +18,16 @@ logger = logging.getLogger(__name__)
 async def lsnr_shard_ready_sync_db(
     event: hikari.ShardReadyEvent, db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase)
 ) -> None:
-    """Shard ready event listener"""
+    """Shard ready event listener."""
     guilds = await event.app.rest.fetch_my_guilds()
 
     for guild in guilds:
         await db.execute("INSERT INTO guild_config (guild_id) VALUES ($1) ON CONFLICT DO NOTHING", guild.id)
 
 
-@component.with_listener(hikari.GuildCreateEvent)
+@component.with_listener(hikari.GuildJoinEvent)
 async def lsnr_new_guild_sync_db(
-    event: hikari.GuildCreateEvent, db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase)
+    event: hikari.GuildJoinEvent, db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase)
 ) -> None:
+    """Add new guild to db when the bot joins."""
     await db.execute("INSERT INTO guild_config (guild_id) VALUES ($1) ON CONFLICT DO NOTHING", event.guild.id)
