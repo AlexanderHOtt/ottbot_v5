@@ -17,3 +17,8 @@ hikari-sake
 
 # Voice
 lavasnek_rs
+
+# extras
+pygount
+distro
+psutil
