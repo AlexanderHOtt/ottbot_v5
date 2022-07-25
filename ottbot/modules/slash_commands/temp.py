@@ -57,7 +57,7 @@ async def cmd_stats(
         mem_of_total = proc.memory_percent()
         mem_usage = mem_total * (mem_of_total / 100)
     guilds = bot.cache.get_guilds_view()
-    
+
     fields: FieldsT = [
         ("hikari.GatewayBot", f"```{VERSION}```", True),
         ("Python", f"```{python_version()}```", True),
