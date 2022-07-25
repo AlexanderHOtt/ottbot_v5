@@ -103,7 +103,7 @@ class EmbedFactory:
 
         embed.set_image(image)
         embed.set_author(name=header, url=header_url, icon=header_icon)
-        embed.set_thumbnail(thumbnail)
+        embed.set_thumbnail(thumbnail if thumbnail is not ESCAPE_NAME else None)
 
         author = author or getattr(ctx_or_event, "author", None)
         EmbedFactory._set_footer(embed, footer, footer_icon, author, bot)

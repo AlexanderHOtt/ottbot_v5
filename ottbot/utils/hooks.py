@@ -22,7 +22,7 @@ USER_ID: {ctx.author.id}
 COMMAND_NAME: {getattr(ctx.command, "name", "")}
 TIMESTAMP: {ctx.created_at}
 ```""",
-    ).add_field("Full Traceback", f"```py\n{''.join(traceback.format_exception(exc))}```")
+    ).add_field("Full Traceback", f"```py\n{(''.join(traceback.format_exception(exc)))[-1000:]}```")
 
     return embed
 

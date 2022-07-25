@@ -11,8 +11,10 @@ def get_source_info() -> FieldsT:
     """Get the sourcecode breakdown of the project."""
     fields: FieldsT = []
 
-    py_files = [str(p) for p in Path(".").glob("ottbot/**/*.py")]
-    sql_files = [str(p) for p in Path(".").glob("ottbot/**/*.sql")]
+    # py_files = [str(p) for p in Path(".").glob("ottbot/**/*.py")]
+    # sql_files = [str(p) for p in Path(".").glob("ottbot/**/*.sql")]
+    sql_files = []
+    py_files = []
 
     summary = ProjectSummary()
     for file in py_files + sql_files:

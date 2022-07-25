@@ -2,4 +2,4 @@
 """Current version of OttBot."""
 import typing as t
 
-VERSION: t.Final[str] = "5.0.0 alpha 4"
+VERSION: t.Final[str] = "5.0.0 alpha 5"

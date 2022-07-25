@@ -11,8 +11,9 @@ import tanjun
 from psutil import Process, virtual_memory
 
 from ottbot import VERSION, logger
+from ottbot.constants import ZWJ
 from ottbot.db import AsyncPGDatabase
-from ottbot.utils.embeds import EmbedFactory, FieldsT
+from ottbot.utils.embeds import EmbedFactory, FieldsT, ESCAPE_NAME
 from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders(__name__)
@@ -59,7 +60,7 @@ async def cmd_stats(
     guilds = bot.cache.get_guilds_view()
 
     fields: FieldsT = [
-        ("hikari.GatewayBot", f"```{VERSION}```", True),
+        ("OttBot", f"```{VERSION}```", True),
         ("Python", f"```{python_version()}```", True),
         ("Hikari", f"```{hikari.__version__}```", True),
         (
@@ -67,8 +68,8 @@ async def cmd_stats(
             f"```{len([_ async for _ in bot.rest.fetch_members(ctx.guild_id)] if ctx.guild_id else [])}```",
             True,
         ),
-        ("Total users", f"```{len(bot.cache.get_users_view()):,}```", True),
         ("Servers", f"```{len(guilds):,}```", True),
+        ("Total users", f"```{len(bot.cache.get_users_view()):,}```", True),
         # ("Lines of code", f"```{bot.lines.total:,}```", True),
         ("Latency", f"```{bot.heartbeat_latency * 1000:,.0f} ms```", True),
         ("Platform", f"```{distro.name()} {distro.version()}```", True),
@@ -98,14 +99,13 @@ async def cmd_stats(
             False,
         ),
     ]
-    await ctx.respond(
-        embed=EmbedFactory.build(
-            ctx,
-            bot,
-            header=" ",
-            title="System stats",
-            thumbnail=me.avatar_url if (me := bot.get_me()) is not None else "None",
-            fields=fields,
-            # color=me.get_me().accent_color
-        ),
+    embed = EmbedFactory.build(
+        ctx,
+        bot,
+        header=ZWJ,
+        title="System stats",
+        thumbnail=me.avatar_url if (me := bot.get_me()) is not None and me.avatar_url else ESCAPE_NAME,
+        fields=fields,
+        # color=me.get_me().accent_color
     )
+    await ctx.respond(embed=embed)
