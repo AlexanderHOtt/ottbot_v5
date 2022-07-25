@@ -131,7 +131,7 @@ class AsyncPGDatabase:
     ) -> None:
         """Execute a write operation on the database.
 
-        UPDATE users SET id=10 WHERE id=1
+        UPDATE users SET bal=10 WHERE id=1
         """
         query = await conn.prepare(q, record_class=record_cls)
         await query.fetch(*values)

@@ -34,6 +34,7 @@ async def cmd_config_list(
     fields: FieldsT = [("Prefix", f"`{config.prefix}`", True)]
     embed = EmbedFactory.build(ctx, bot, title="**Server Configuration**", fields=fields)
     await ctx.respond(embed=embed)
+    # config.
 
 
 @config.with_command
@@ -46,26 +47,45 @@ async def cmd_config_welcomechannel(
     channel: hikari.TextableGuildChannel,
     db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
 ) -> None:
-    """Set the welcome channel of a guild."""
-    await db.execute("UPDATE guild_config SET welcome_channel_id = $1", channel.id)
-    await ctx.respond(f"Updated `welcome_channel_id` to {channel.id} ({channel.mention})")
-
-
-@config.with_command
-@tanjun.with_str_slash_option("new_prefix", "The new prefix to use for the bot.")
-@tanjun.as_slash_command("prefix", "Update the guild prefix")
-async def cmd_asdf(
-    ctx: tanjun.abc.SlashContext,
-    new_prefix: str,
-    db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
-) -> None:
-    """Asdf."""
+    """Update the channel the bot sends welcome messages in."""
     if ctx.guild_id is None:
         return
 
-    if len(new_prefix) > 5:
-        await ctx.respond("The prefix is limited to 5 characters")
+    await db.execute("UPDATE guild_config SET welcome_channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild_id)
+    await ctx.respond(f"Updated `welcome_channel_id` to {channel.id} (<#{channel.id}>)")
+
+
+@config.with_command
+@tanjun.with_channel_slash_option(
+    "channel", "The channel to log admin messages in.", types=(hikari.TextableGuildChannel,)
+)
+@tanjun.as_slash_command("log-channel", "Update the admin log channel.")
+async def cmd_config_log_channel(
+    ctx: tanjun.abc.SlashContext,
+    channel: hikari.InteractionChannel,
+    db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
+) -> None:
+    """Update the admin log channel."""
+    if ctx.guild_id is None:
         return
 
-    await db.execute("UPDATE guild_config SET prefix = $1", new_prefix)
-    await ctx.respond(f"Updated `prefix` to {new_prefix}")
+    await db.execute("UPDATE guild_config SET log_channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild_id)
+    await ctx.respond(f"Updated `log_channel` to <#{channel.id}>")
+
+
+@config.with_command
+@tanjun.with_channel_slash_option(
+    "channel", "The channel to send starboard messages in.", types=(hikari.TextableGuildChannel,)
+)
+@tanjun.as_slash_command("starboard-channel", "Update the starboard channel.")
+async def cmd_config_starboard_channel(
+    ctx: tanjun.abc.SlashContext,
+    channel: hikari.InteractionChannel,
+    db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
+) -> None:
+    """Update the starboard channel."""
+    if ctx.guild_id is None:
+        return
+
+    await db.execute("UPDATE guild_config SET starboard_channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild_id)
+    await ctx.respond(f"Updated `log_channel` to <#{channel.id}>")

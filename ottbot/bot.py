@@ -1,5 +1,5 @@
 # -*- coding=utf-8 -*-
-"""Create and configure differet Discord bot types."""
+"""Create and configure different Discord bot types."""
 import typing as t
 
 import hikari
@@ -55,7 +55,7 @@ def build_client(bot: hikari.GatewayBot, config: config_.FullConfig | None = Non
 def register_client_deps(
     bot: hikari.GatewayBot, client: tanjun.Client, config: config_.FullConfig | None = None
 ) -> tanjun.Client:
-    """Register `tanjun.Client` callabacks and dependencies."""
+    """Register `tanjun.Client` callbacks and dependencies."""
     if config is None:
         config = config_.FullConfig.from_env()
 
@@ -70,8 +70,7 @@ def register_client_deps(
     # Command Prefix settings
     client.add_prefix(config.prefixes)
 
-    @client.with_prefix_getter
-    async def _(
+    async def prefix_getter(
         ctx: tanjun.abc.MessageContext, db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase)
     ) -> t.Iterable[str]:
         """Get the prefix for a guild."""
@@ -84,6 +83,8 @@ def register_client_deps(
         ) is not None:
             return [config.prefix]
         return []
+
+    client.set_prefix_getter(prefix_getter)
 
     # Client config
     (
