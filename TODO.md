@@ -3,8 +3,8 @@
 ## General
 
 - [ ] Normalize Embed footers for events
-- [ ] custom colors for event types
-- [ ] fix yuyo client response in auto_roles
+- [-] custom colors for event types
+- [ ] fix yuyo client response in auto\_roles
   - [ ] explore how select menus work
 - [ ] fix module structure and add command groups where necessary
 - [ ] use `logging.exception` for exceptions

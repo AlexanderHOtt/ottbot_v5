@@ -9,8 +9,7 @@ from ottbot import VERSION, bot, logger
 dotenv.load_dotenv()
 
 
-# logging is handled by hikari, but hikari isn't initialized until `bot.run()` is called
-logger.info(  # noqa: T001
+logger.info(
     rf"""
   _______             ______                      _______     OttBot v{VERSION}
  (_______)  _     _  (____  \        _           (_______)

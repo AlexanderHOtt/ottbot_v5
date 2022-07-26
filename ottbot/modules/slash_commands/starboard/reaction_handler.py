@@ -2,14 +2,36 @@
 """Handle reaction add and remove events."""
 
 
+import typing
 import hikari
 import sake
 import tanjun
 
+from ottbot import logger
+from ottbot.constants import Colors
 from ottbot.db import AsyncPGDatabase, GuildConfig, Starboard
-from ottbot.utils.funcs import build_loaders, get_message, message_link
+from ottbot.utils.funcs import build_loaders, get_member, get_message, message_link
 
 component, load_component, unload_component = build_loaders()
+
+# https://apps.timwhitlock.info/unicode/inspect for unicode character names of '⭐🌟✨💫'
+STAR_EMOJIS = ("\N{WHITE MEDIUM STAR}", "\N{GLOWING STAR}", "\N{SPARKLES}", "\N{DIZZY SYMBOL}")
+
+
+def count_stars(reactions: typing.Sequence[hikari.Reaction]) -> int:
+    """Count the number of star emojis in a sequence of reactions."""
+    return sum([r.count for r in reactions if r.emoji.name in STAR_EMOJIS])
+
+
+def _embed(event: hikari.GuildReactionAddEvent, member: hikari.Member, message: hikari.Message) -> hikari.Embed:
+    link = message_link(event.guild_id, message.channel_id, message.id)
+    embed = hikari.Embed(title="Jump to message", description=message.content, url=link, color=Colors.YELLOW)
+    # TODO: fix when url can be a hikari.URL
+    embed.set_author(
+        name=f"{member.display_name} with {count_stars(message.reactions)}x \N{WHITE MEDIUM STAR}",
+        icon=member.avatar_url,
+    )
+    return embed
 
 
 @component.with_listener(hikari.GuildReactionAddEvent)
@@ -33,21 +55,24 @@ async def lsnr_guild_reaction_add_event(
         )
     ) is None:
         return
-    if guild_config.starboard_channel is None:
+    if guild_config.starboard_channel_id is None:
         return
-    if event.emoji_name != "star":
+    if event.emoji_name not in STAR_EMOJIS:
         return
 
-    message = await get_message(event.channel_id, event.message_id, bot.cache, redis, bot.rest)
-    link = message_link(event.guild_id, message.channel_id, message.id)
+    # message = await get_message(event.channel_id, event.message_id, bot.cache, redis, bot.rest)
+    message = await bot.rest.fetch_message(event.channel_id, event.message_id)
+    member = await get_member(event.guild_id, event.user_id, bot.cache, redis, bot.rest)
+    embed = _embed(event, member, message)
     if (
         starboard := await db.row(
             "SELECT * FROM starboard WHERE original_message_id = $1", event.message_id, record_cls=Starboard
         )
     ) is None:
         sent_msg = await event.app.rest.create_message(
-            guild_config.starboard_channel,
-            f"Starred message with {len([r for r in message.reactions if r.emoji.name == 'star'])}\n{link}",
+            guild_config.starboard_channel_id,
+            # f"Starred message with {count_stars(message.reactions)}\n{link}",
+            embed=embed,
         )
 
         await db.execute(
@@ -56,21 +81,23 @@ async def lsnr_guild_reaction_add_event(
             VALUES ($1, $2, $3, $4)",
             event.channel_id,
             event.message_id,
-            guild_config.starboard_channel,
+            guild_config.starboard_channel_id,
             sent_msg.id,
         )
     else:
         await event.app.rest.edit_message(
             starboard.sent_channel_id,
             starboard.sent_message_id,
-            f"Starred message with {len([r for r in message.reactions if r.emoji.name == 'star'])}\n{link}",
+            # f"Starred message with {count_stars(message.reactions)}\n{link}",
+            embed=embed,
         )
 
 
-# TODO: check which delete event should be used
+# TODO: merge these when the issue / pr gets resolved
+@component.with_listener(hikari.GuildReactionDeleteEmojiEvent)
 @component.with_listener(hikari.GuildReactionDeleteEvent)
 async def lsnr_guild_reaction_delete_event(
-    event: hikari.GuildReactionDeleteEvent,
+    event: hikari.GuildReactionDeleteEvent | hikari.GuildReactionDeleteEmojiEvent,
     db: AsyncPGDatabase = tanjun.inject(type=AsyncPGDatabase),
     bot: hikari.GatewayBot = tanjun.inject(type=hikari.GatewayBot),
     redis: sake.RedisCache = tanjun.inject(type=sake.RedisCache),
@@ -90,15 +117,16 @@ async def lsnr_guild_reaction_delete_event(
             "SELECT * from guild_config WHERE guild_id = $1", event.guild_id, record_cls=GuildConfig
         )
     ) is None:
+        logger.error(f"No guild config for {event.guild_id}")
         return
-    if guild_config.starboard_channel is None:
+    if guild_config.starboard_channel_id is None:
         return
     if event.emoji_name != "star":
         return
 
     message = await get_message(event.channel_id, event.message_id, bot.cache, redis, bot.rest)
     link = message_link(event.guild_id, message.channel_id, message.id)
-    count = len([r for r in message.reactions if r.emoji.name == "star"])
+    count = len([r for r in message.reactions if r.emoji.name in STAR_EMOJIS])
     if (
         starboard := await db.row(
             "SELECT * FROM starboard WHERE original_message_id = $1", event.message_id, record_cls=Starboard
@@ -106,7 +134,7 @@ async def lsnr_guild_reaction_delete_event(
     ) is None:
         if count > 0:
             sent_msg = await event.app.rest.create_message(
-                guild_config.starboard_channel,
+                guild_config.starboard_channel_id,
                 f"Starred message with {count}\n{link}",
             )
 
@@ -116,7 +144,7 @@ async def lsnr_guild_reaction_delete_event(
                 VALUES ($1, $2, $3, $4)",
                 event.channel_id,
                 event.message_id,
-                guild_config.starboard_channel,
+                guild_config.starboard_channel_id,
                 sent_msg.id,
             )
     else:
@@ -124,7 +152,7 @@ async def lsnr_guild_reaction_delete_event(
             await event.app.rest.edit_message(
                 starboard.sent_channel_id,
                 starboard.sent_message_id,
-                f"Starred message with {len([r for r in message.reactions if r.emoji.name == 'star'])}\n{link}",
+                f"Starred message with {count_stars(message.reactions)}\n{link}",
             )
         else:
             await event.app.rest.delete_message(starboard.sent_channel_id, starboard.sent_message_id)

@@ -58,7 +58,7 @@ class GuildConfig(AttrRecord):
     welcome_channel_id: int | None
     welcome_mesage: str | None
     log_channel_id: int | None
-    starboard_channel: int | None
+    starboard_channel_id: int | None
 
 
 class User(AttrRecord):

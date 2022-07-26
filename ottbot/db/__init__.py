@@ -1,5 +1,5 @@
 # -*- coding=utf-8 -*-
-"""Database handlder for a postgres database."""
+"""Database handler for a postgres database."""
 from .db import AsyncPGDatabase
 from .records import AutoRole, Currency, GuildConfig, Starboard, User
 

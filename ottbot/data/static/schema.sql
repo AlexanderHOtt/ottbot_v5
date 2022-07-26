@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
     discriminator varchar(4) NOT NULL
 );
 
-DROP TABLE IF EXISTS guild_config;
 
 CREATE TABLE IF NOT EXISTS guild_config (
     id bigserial NOT NULL PRIMARY KEY,
@@ -19,7 +18,7 @@ CREATE TABLE IF NOT EXISTS guild_config (
     welcome_channel_id bigint,
     welcome_message varchar(64),
     log_channel_id bigint,
-    starboard_channel bigint
+    starboard_channel_id bigint
 );
 
 -- DROP TABLE IF EXISTS currency;

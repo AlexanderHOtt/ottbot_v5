@@ -31,7 +31,10 @@ async def cmd_config_list(
     config = await get_guild_config(ctx.guild_id, db)
     await ctx.respond("Config")
 
-    fields: FieldsT = [("Prefix", f"`{config.prefix}`", True)]
+    fields: FieldsT = [
+        ("Prefix", f"`{config.prefix}`", True),
+        ("Starboard Channel", f"<#{config.starboard_channel_id}>" if config.starboard_channel_id else "Not set", True),
+    ]
     embed = EmbedFactory.build(ctx, bot, title="**Server Configuration**", fields=fields)
     await ctx.respond(embed=embed)
     # config.
