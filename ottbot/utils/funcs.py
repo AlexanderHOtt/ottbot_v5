@@ -455,7 +455,7 @@ def format_time(dt: datetime.datetime, fmt: t.Literal["t", "T", "D", "f", "F"]) 
     | f | D Mo Yr HH:MM    | 20 April 2022 16:20
     | F | W, D Mo Yr HH:MM | Wednesday, 20 April 2022 16:20
     """
-    match format:
+    match format:  # noqa: E999
         case "t" | "T" | "D" | "f" | "F":
             return f"<t:{dt.timestamp():.0f}:{fmt}>"
         case _:

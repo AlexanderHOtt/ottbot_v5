@@ -1,6 +1,7 @@
 # -*- coding=utf-8 -*-
 """Example slash commands."""
 
+
 import tanjun
 
 from ottbot.utils.funcs import build_loaders
@@ -10,9 +11,10 @@ component, load_component, unload_component = build_loaders()
 
 @component.with_slash_command
 @tanjun.as_slash_command("example_slash", "An example slash command")
-async def cmd_example_slash(ctx: tanjun.abc.Context):
+async def cmd_example_slash(ctx: tanjun.abc.SlashContext):
     """Example slash command."""
     await ctx.respond(f"Hello {ctx.author.mention}", user_mentions=False)
+    await ctx.respond()
 
 
 @component.with_slash_command

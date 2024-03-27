@@ -3,7 +3,6 @@
 import hikari
 import tanjun
 import yuyo
-from yuyo.pagination import EntryT, IteratorT
 
 from ottbot.utils.funcs import build_loaders
 
@@ -27,7 +26,7 @@ async def cmd_example_pagination(
     #     ]
     # )
 
-    pages: IteratorT[EntryT] = iter(
+    pages = iter(
         [
             ("page 1\nok", hikari.UNDEFINED),
             (hikari.UNDEFINED, hikari.Embed(description="page 2")),

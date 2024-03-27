@@ -13,7 +13,7 @@ from psutil import Process, virtual_memory
 from ottbot import VERSION, logger
 from ottbot.constants import ZWJ
 from ottbot.db import AsyncPGDatabase
-from ottbot.utils.embeds import EmbedFactory, FieldsT, ESCAPE_NAME
+from ottbot.utils.embeds import ESCAPE_NAME, EmbedFactory, FieldsT
 from ottbot.utils.funcs import build_loaders
 
 component, load_component, unload_component = build_loaders(__name__)

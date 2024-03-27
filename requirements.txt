@@ -2,12 +2,12 @@
 aiohttp
 uvloop>=0.16; os_name != 'nt'
 hikari
-hikari[speedups]
-git+https://github.com/FasterSpeeding/Tanjun.git
-#hikari-tanjun
+# hikari[speedups]
+# git+https://github.com/FasterSpeeding/Tanjun.git
+hikari-tanjun
 hikari-yuyo
-git+https://github.com/thesadru/tanchi.git
-#hikari-tanchi
+# git+https://github.com/thesadru/tanchi.git
+# hikari-tanchi
 
 # Data management
 aiofiles
@@ -16,7 +16,7 @@ asyncpg
 hikari-sake
 
 # Voice
-lavasnek_rs
+lavasnek_rs; os_name != 'nt'
 
 # extras
 pygount

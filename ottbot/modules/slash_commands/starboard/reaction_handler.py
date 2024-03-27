@@ -3,6 +3,7 @@
 
 
 import typing
+
 import hikari
 import sake
 import tanjun
@@ -15,7 +16,7 @@ from ottbot.utils.funcs import build_loaders, get_member, get_message, message_l
 component, load_component, unload_component = build_loaders()
 
 # https://apps.timwhitlock.info/unicode/inspect for unicode character names of '⭐🌟✨💫'
-STAR_EMOJIS = ("\N{WHITE MEDIUM STAR}", "\N{GLOWING STAR}", "\N{SPARKLES}", "\N{DIZZY SYMBOL}")
+STAR_EMOJIS = ("\N{WHITE MEDIUM STAR}", "\N{GLOWING STAR}", "\N{SPARKLES}", "\N{DIZZY SYMBOL}")  # noqa: FS003
 
 
 def count_stars(reactions: typing.Sequence[hikari.Reaction]) -> int:

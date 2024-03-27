@@ -13,7 +13,6 @@ from ottbot.db.records import GuildConfig
 from ottbot.utils.funcs import get_list_of_files
 from ottbot.utils.hooks import on_error, on_parser_error, pre_command
 
-
 # https://stackoverflow.com/questions/7507825/where-is-a-complete-example-of-logging-config-dictconfig
 logging_config = {
     "version": 1,
@@ -64,7 +63,7 @@ def register_client_deps(
     reaction_client = yuyo.ReactionClient.from_gateway_bot(bot, event_managed=False)
 
     # Databases
-    redis_cache = sake.RedisCache(address=f"redis://{config.redis_host}", app=bot, event_manager=bot.event_manager)
+    # redis_cache = sake.RedisCache(address=f"redis://{config.redis_host}", app=bot, event_manager=bot.event_manager)
     database = AsyncPGDatabase(config.database)
 
     # Command Prefix settings
@@ -94,12 +93,12 @@ def register_client_deps(
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, reaction_client.close)
         .add_client_callback(tanjun.ClientCallbackNames.STARTING, database.connect)
         .add_client_callback(tanjun.ClientCallbackNames.CLOSING, database.close)
-        .add_client_callback(tanjun.ClientCallbackNames.STARTING, redis_cache.open)
-        .add_client_callback(tanjun.ClientCallbackNames.CLOSING, redis_cache.close)
+        # .add_client_callback(tanjun.ClientCallbackNames.STARTING, redis_cache.open)
+        # .add_client_callback(tanjun.ClientCallbackNames.CLOSING, redis_cache.close)
         # Dep injection
         .set_type_dependency(yuyo.ComponentClient, component_client)
         .set_type_dependency(yuyo.ReactionClient, reaction_client)
-        .set_type_dependency(sake.redis.RedisCache, redis_cache)
+        # .set_type_dependency(sake.redis.RedisCache, redis_cache)
         .set_type_dependency(AsyncPGDatabase, database)
         .set_type_dependency(config_.FullConfig, config)
     )

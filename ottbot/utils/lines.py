@@ -1,7 +1,5 @@
 # -*- coding=utf-8 -*-
 """Count the sourcecode lines of the Bot."""
-from pathlib import Path
-
 from pygount import ProjectSummary, SourceAnalysis
 
 from ottbot.utils.embeds import FieldsT
@@ -13,8 +11,8 @@ def get_source_info() -> FieldsT:
 
     # py_files = [str(p) for p in Path(".").glob("ottbot/**/*.py")]
     # sql_files = [str(p) for p in Path(".").glob("ottbot/**/*.sql")]
-    sql_files = []
-    py_files = []
+    sql_files: list[str] = []
+    py_files: list[str] = []
 
     summary = ProjectSummary()
     for file in py_files + sql_files:

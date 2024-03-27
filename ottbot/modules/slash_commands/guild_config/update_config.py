@@ -37,7 +37,6 @@ async def cmd_config_list(
     ]
     embed = EmbedFactory.build(ctx, bot, title="**Server Configuration**", fields=fields)
     await ctx.respond(embed=embed)
-    # config.
 
 
 @config.with_command

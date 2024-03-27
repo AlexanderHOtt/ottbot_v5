@@ -18,13 +18,13 @@ async def cmd_example_button(ctx: tanjun.abc.SlashContext) -> None:
         return
 
     row = (
-        ctx.rest.build_action_row()
+        ctx.rest.build_message_action_row()
         .add_button(hikari.ButtonStyle.PRIMARY, "example_button_id")
         .set_label("Click Me")
         .add_to_container()
     )
     row2 = (
-        ctx.rest.build_action_row()
+        ctx.rest.build_message_action_row()
         .add_button(hikari.ButtonStyle.SUCCESS, "example_button_id;OK")
         .set_emoji("✅")
         .add_to_container()
@@ -33,7 +33,7 @@ async def cmd_example_button(ctx: tanjun.abc.SlashContext) -> None:
         .add_to_container()
     )
     row3 = (
-        ctx.rest.build_action_row()
+        ctx.rest.build_message_action_row()
         .add_button(hikari.ButtonStyle.LINK, "https://github.com/AlexanderHOtt/ottbot_v4")
         .set_label("Github Repo")
         .add_to_container()
@@ -51,7 +51,7 @@ async def cmd_example_select_menu(ctx: tanjun.abc.Context) -> None:
         return
 
     row = (
-        ctx.rest.build_action_row()
+        ctx.rest.build_message_action_row()
         .add_select_menu("example_menu_id")
         # option 1
         .add_option("Red", "Red")
@@ -97,7 +97,7 @@ async def cmd_example_cb(
         component_client.set_constant_id(custom_id, yuyo_callback)
 
     row = (
-        ctx.rest.build_action_row()
+        ctx.rest.build_message_action_row()
         .add_button(hikari.ButtonStyle.SUCCESS, custom_id)
         .set_label("Click me!")
         .add_to_container()
@@ -125,7 +125,7 @@ async def cmd_example_select_menu_cb(
 
     options: list[tuple[str, str, str | None, hikari.Emoji | hikari.Snowflakeish]] = []
 
-    menu = (row := ctx.rest.build_action_row()).add_select_menu(custom_id)
+    menu = (row := ctx.rest.build_message_action_row()).add_select_menu(custom_id)
 
     for key, value, desc, emoji in options:
         option = menu.add_option(key, value)
